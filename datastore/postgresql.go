@@ -68,7 +68,7 @@ func newPQDatastore(config Config) (*pQDatastore, error) {
 			id SERIAL,
 			name VARCHAR(64) NOT NULL,
 			email VARCHAR(64) NOT NULL,
-			created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+			created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
 			UNIQUE (email),
 			PRIMARY KEY (id)
 		);`,
@@ -80,7 +80,8 @@ func newPQDatastore(config Config) (*pQDatastore, error) {
 			image_url text,
 			description text,
 			recommended BOOLEAN NOT NULL DEFAULT false,
-			created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+			created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+			recommended_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
 			PRIMARY KEY (id)
 		);`,
 	}
