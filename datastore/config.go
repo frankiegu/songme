@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/url"
 	"os"
+	"strings"
 )
 
 // Config holds configuration information belongs to database.
@@ -57,6 +59,28 @@ func (config Config) EnsurePQReady(statements []string) error {
 }
 
 func init() {
+	if os.Getenv("ENV") == "PRODUCTION" {
+		initProduction()
+	} else {
+		initLocal()
+	}
+}
+
+func initProduction() {
+	u, err := url.Parse(os.Getenv("DATABASE_URL"))
+	if err != nil {
+		log.Fatal("[DATASTORE - INIT]", err)
+	}
+
+	DefaultConfig.DBHost = u.Hostname()
+	DefaultConfig.DBPort = u.Port()
+	DefaultConfig.DBUser = u.User.Username()
+	DefaultConfig.DBPass, _ = u.User.Password()
+	DefaultConfig.DBName = strings.TrimPrefix(u.Path, "/")
+	DefaultConfig.SSLMode = "disable"
+}
+
+func initLocal() {
 	file, err := os.Open("datastore/config.json")
 	if err != nil {
 		log.Fatal("[DATASTORE - INIT]", err)
