@@ -14,8 +14,6 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 		RenderTemplate(w, "index/home", &page)
 	case "POST":
-		// TODO: make sure http.NotFound is appropriate.
-		// TODO: display a custom 'not found' page.
 		http.NotFound(w, r)
 	}
 }

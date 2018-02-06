@@ -12,10 +12,10 @@ import (
 // SignUp registers new subscriber
 func SignUp(e *env.Env) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
 		switch r.Method {
 		case "GET":
-			http.Redirect(w, r, "/", http.StatusMethodNotAllowed)
+			w.WriteHeader(http.StatusNotFound)
+			RenderTemplate(w, "error/page", nil)
 		case "POST":
 			signup(w, r, e)
 		}
@@ -39,7 +39,8 @@ func signup(w http.ResponseWriter, r *http.Request, e *env.Env) {
 	err := e.DB.Subscribe(subscriber)
 	if err != nil {
 		log.Println("[SignUp]:", err)
-		http.Redirect(w, r, "/", http.StatusInternalServerError)
+		w.WriteHeader(http.StatusInternalServerError)
+		RenderTemplate(w, "error/page", nil)
 		return
 	}
 
