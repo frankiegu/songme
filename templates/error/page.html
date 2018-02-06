@@ -1,0 +1,52 @@
+{{define "error/page"}}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- PAGE settings -->
+    <link rel="icon" href="https://templates.pingendo.com/assets/Pingendo_favicon.ico">
+    <title>{{.Title}}</title>
+    <meta name="description" content="Your daily must be listened song recommender.">
+    <meta name="keywords" content="Songme song recommendation discover app free newsletter">
+
+    <!-- CSS dependencies -->
+    <link rel="stylesheet" href="static/css/theme.css">
+    <!-- Disable scrolling -->
+    <style>
+        body {
+            overflow: hidden;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="jumbotron h-100 text-center">
+        <div class="container">
+            <div class="row my-3">
+                <div class="col">
+                    <h2>Oops! Something went wrong.</h2>
+                    <p class="mb-4 h6">Please follow the link below.</p>
+                    <img src="static/img/notfound.svg" alt="" width="260"> 
+                </div>
+            </div>
+            <div class="row my-5">
+                <div class="col-4 mx-auto">
+                    <a href="/" class="btn btn-primary btn-sm w-50">Home</a>
+                </div>
+            </div>
+        </div>
+        <footer class="fixed-bottom"> Icon made by
+            <a href="http://www.freepik.com" title="Freepik">Freepik</a> from
+            <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by
+            <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
+        </footer>
+    </div>
+</body>
+
+</html>
+{{end}}
