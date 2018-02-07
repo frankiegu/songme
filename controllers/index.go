@@ -66,7 +66,6 @@ func subscribe(w http.ResponseWriter, r *http.Request, ev *env.Vars, s *sform) {
 		return
 	}
 
-	// TODO: Show a 'subscribed successful' page.
-	log.Println("Subscribed:", r.FormValue("name"), r.FormValue("email"))
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	log.Println("Successfully subscribed:", r.FormValue("name"), r.FormValue("email"))
+	RenderTemplate(w, "subscription/success", s)
 }
