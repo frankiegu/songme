@@ -18,14 +18,13 @@ func main() {
 	}
 	defer db.Close()
 
-	env := &env.Env{DB: db}
+	ev := &env.Vars{DB: db}
 
 	// FileServer
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	// Routes
-	http.HandleFunc("/", controllers.Index)
-	http.Handle("/signup", controllers.SignUp(env))
+	http.Handle("/", controllers.Index(ev))
 
 	// Serve
 	port := "8080"
