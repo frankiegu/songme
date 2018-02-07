@@ -23,7 +23,7 @@
             <p class="lead">Your daily must be listened song recommender.</p>
             <div class="row mt-5">
               <div class="col-6 col-lg-4">
-                <a class="btn btn-secondary d-block shadowed" href="#subscribe">Subscribe</a>
+                <a id ="subscription-btn" class="btn btn-secondary d-block shadowed" href="#subscribe">Subscribe</a>
               </div>
             </div>
           </div>
@@ -44,16 +44,16 @@
         </div>
         <div class="row my-3 py-3">
           <div class="col-md-12 ">
-            <form class="mx-auto col-md-9" action="/signup" method="POST">
+            <form class="mx-auto col-md-9" action="/" method="POST">
               <div class="row mb-4">
                 <div class="col-md-6">
-                  <input type="text" class="form-control form-control-lg" placeholder="Your Name" name="name" id="name" value="{{.Fields.name}}" required> 
+                  <input type="text" class="form-control form-control-lg" placeholder="Your Name" name="name" id="name" value="{{.Components.name}}" required> 
                   {{with .Errors.name}}
                     <div class="text-left px-1"><small class="form-text text-danger">{{.}}</small></div>
                   {{end}}
                 </div>
                 <div class="col-md-6">
-                  <input type="email" class="form-control form-control-lg" placeholder="Your Email" name="email" id="email" value="{{.Fields.email}}" required> 
+                  <input type="email" class="form-control form-control-lg" placeholder="Your Email" name="email" id="email" value="{{.Components.email}}" required> 
                   {{with .Errors.email}}
                     <div class="text-left px-1"><small class="form-text text-danger">{{.}}</small></div>
                   {{end}}
