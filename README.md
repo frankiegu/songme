@@ -1,3 +1,3 @@
 # songme
 
-A Go web app that recommends songs daily.
+A Go web app that recommends songs.
