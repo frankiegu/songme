@@ -25,6 +25,7 @@ func main() {
 
 	// Routes
 	http.Handle("/", controllers.Index(ev))
+	http.Handle("/add-song", controllers.AddSong(ev))
 
 	// Serve
 	port := "8080"
