@@ -1,0 +1,45 @@
+{{define "song/add"}}
+{{template "layout/header" .}}
+
+{{template "layout/body-header" .}}
+
+    {{template "common/navbar" .}}
+
+    <!-- ADD SONG form -->
+    <div class="container-fluid bg-light">
+      <div class="row py-5">
+        <div class="col-lg-5 mx-auto">
+          <h3 class="py-3">Song details</h3>
+          <form action="/add-song" method="POST">
+            <div class="form-group"> 
+              <label for="title">Title</label>
+              <input placeholder="Song title" class="form-control" type="text" id="title" name="title"> 
+            </div>
+            <div class="form-group"> 
+              <label for="author">Author</label>
+              <input placeholder="Song author" type="text" class="form-control" id="author" name="author"> 
+            </div>
+            <div class="form-group"> 
+              <label for="song-url">Song URL</label>
+              <input placeholder="Song URL" type="text" class="form-control" id="song-url" name="song-url"> 
+            </div>
+            <div class="form-group"> 
+              <label for="image-url">Image URL</label>
+              <input placeholder="Image URL" type="text" class="form-control" id="image-url" name="image-url"> 
+            </div>
+            <div class="form-group"> 
+              <label for="description">Description</label> 
+              <textarea rows="5" placeholder="Description" class="form-control" id="description" name="description"></textarea> 
+            </div>
+            <button type="submit" class="btn btn-default btn-outline-dark mb-5 px-4">Add</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    {{template "common/footer" .}}
+
+{{template "layout/body-footer" .}}
+
+{{template "layout/footer" .}}
+{{end}}

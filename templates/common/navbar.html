@@ -1,20 +1,19 @@
 {{define "common/navbar"}}
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <div class="container">
-          <a class="navbar-brand" href="#">Songme</a>
-          <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar2SupportedContent" aria-controls="navbar2SupportedContent" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
-          <div class="collapse navbar-collapse text-center justify-content-end" id="navbar2SupportedContent">
-            <ul class="navbar-nav">
-              <li class="nav-item mx-2">
-                <a class="nav-link" href="/about-us">About Us</a>
-              </li>
-              <li class="nav-item mx-2">
-                <a class="nav-link" href="/contact">Contact</a>
-              </li>
-            </ul>
-            <a class="btn navbar-btn text-white mx-2 btn-secondary btn-sm" href="#subscribe">Subscribe</a>
-          </div>
+    <nav class="navbar navbar-expand-md navbar-light bg-light">
+      <div class="container">
+        <a href="/" class="navbar-brand">Songme</a>
+        <button class="navbar-toggler float-right" type="button" data-toggle="collapse" data-target="#navbar9"> <span class="navbar-toggler-icon"></span> </button>
+        <div class="navbar-collapse collapse" id="myNavbar">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a href="/" class="nav-link mx-3">HOME</a>
+            </li>
+            <li class="nav-item">
+              <a href="/add-song" class="nav-link mx-2">ADD SONG</a>
+            </li>
+          </ul>
         </div>
+      </div>
     </nav>
 {{end}}

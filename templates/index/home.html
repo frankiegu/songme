@@ -1,75 +1,40 @@
 {{define "index/home"}}
 {{template "layout/header" .}}
 
-    <!-- CSS Dependencies -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    
-    <!-- Script: Make my navbar transparent when the document is scrolled to top -->
-    <script src="static/js/navbar-ontop.js"></script>
-    
-    <!-- Script: Animated entrance -->
-    <script src="static/js/animate-in.js"></script>
-
 {{template "layout/body-header" .}}
     
     {{template "common/navbar" .}}
 
-    <!-- Cover -->
-    <div class="pt-5 bg-primary section-dark-opaque bg-gradient">
-      <div class="container mt-5 pt-5">
+    <div class="bg-light pad-150">
+      <div class="container">
         <div class="row">
-          <div class="col-md-6 my-5 text-lg-left text-center align-self-center">
-            <h1 class="display-1">Songme</h1>
-            <p class="lead">Your daily must be listened song recommender.</p>
+          <div class="col">
+            <div class="row align-items-center justify-content-center">
+              <div class="col-lg-6 text-lg-right text-center">
+                <h4 class="display-4">Stairway to Heaven</h4>
+                <h5>Led Zeppelin</h5>
+                <p class="lead">
+                  The song begins in a slow tempo with acoustic instruments. 
+                  The final section is highlighted by Page's intricate guitar solo accompanying Plant's vocals that end with the plaintive 
+                  a cappella line: "And she's buying a stairway to heaven."
+                </p>
+              </div>
+              <div class="col-lg-6">
+                <div class="embed-responsive embed-responsive-16by9">
+                  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/cwFQpRTwaP0" allowfullscreen=""></iframe>
+                </div>
+              </div>
+            </div>
             <div class="row mt-5">
-              <div class="col-6 col-lg-4">
-                <a id ="subscription-btn" class="btn btn-secondary d-block shadowed" href="#subscribe">Subscribe</a>
+              <div class="col-lg-6 text-lg-right text-center">
+                <button class="btn mt-4 px-5 bg-dblue">MORE </button>
               </div>
             </div>
           </div>
-          <div class="col-lg-6">
-            <img class="img-fluid d-block mx-auto" src="static/img/iphone_cover_light.png" width="400"> </div>
         </div>
       </div>
     </div>
-
-    <!-- Subscribe-->
-    <div class="py-5 bg-light" id="subscribe">
-      <div class="text-center container py-3">
-        <div class="row my-3">
-          <div class="col-md-12">
-            <h3 class="display-3 mb-3">Discover</h3>
-            <p class="lead">Paragraph. Lorem ipsum dolor sit amet, consectetur adipiscing elit. adasdasdjas kasjdjhas adkshkd ashkj dahjkshkd askhj kasdhkj ahjks ashkd ashkj ahjksd ashjk hadsd ashjk haksh dashjkdakhsj</p>
-          </div>
-        </div>
-        <div class="row my-3 py-3">
-          <div class="col-md-12 ">
-            <form class="mx-auto col-md-9" action="/" method="POST">
-              <div class="row mb-4">
-                <div class="col-md-6">
-                  <input type="text" class="form-control form-control-lg" placeholder="Your Name" name="name" id="name" value="{{.Components.name}}" required> 
-                  {{with .Errors.name}}
-                    <div class="text-left px-1"><small class="form-text text-danger">{{.}}</small></div>
-                  {{end}}
-                </div>
-                <div class="col-md-6">
-                  <input type="email" class="form-control form-control-lg" placeholder="Your Email" name="email" id="email" value="{{.Components.email}}" required> 
-                  {{with .Errors.email}}
-                    <div class="text-left px-1"><small class="form-text text-danger">{{.}}</small></div>
-                  {{end}}
-                </div>
-              </div>
-              <div class="row">
-                <div class="col">
-                  <button type="submit" class="btn btn-block btn-secondary">Subscribe</button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-
+    
     {{template "common/footer" .}}
     
 {{template "layout/body-footer" .}}
