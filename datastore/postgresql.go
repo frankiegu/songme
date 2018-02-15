@@ -48,16 +48,15 @@ func (pq *pQDatastore) Subscribe(subscriber *models.Subscriber) error {
 // CreateSong inserts given song into database.
 func (pq *pQDatastore) CreateSong(song *models.Song) error {
 	stmt := `
-	INSERT INTO song (
+	INSERT INTO candidate_song (
 		title, 
 		author, 
 		song_url, 
 		image_url, 
-		description, 
-		recommended
+		description
 	) 
-	VALUES ($1, $2, $3, $4, $5, $6);`
-	_, err := pq.Exec(stmt, song.Title, song.Author, song.SongURL, song.ImageURL, song.Description, song.Recommended)
+	VALUES ($1, $2, $3, $4, $5);`
+	_, err := pq.Exec(stmt, song.Title, song.Author, song.SongURL, song.ImageURL, song.Description)
 	return err
 }
 
@@ -74,14 +73,30 @@ func newPQDatastore(config Config) (*pQDatastore, error) {
 		);`,
 		`CREATE TABLE IF NOT EXISTS song (
 			id SERIAL,
-			title text NOT NULL,
-			author text NOT NULL,
-			song_url text NOT NULL,
-			image_url text,
-			description text,
+			title VARCHAR(255) NOT NULL,
+			author VARCHAR(255) NOT NULL,
+			song_url VARCHAR(255) NOT NULL,
+			image_url VARCHAR(255),
+			description VARCHAR(280),
 			recommended BOOLEAN NOT NULL DEFAULT false,
 			created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
 			recommended_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+			UNIQUE (title),
+			UNIQUE (song_url),
+			PRIMARY KEY (id)
+		);`,
+		`CREATE TABLE IF NOT EXISTS candidate_song (
+			id SERIAL,
+			title VARCHAR(255) NOT NULL,
+			author VARCHAR(255) NOT NULL,
+			song_url VARCHAR(255) NOT NULL,
+			image_url VARCHAR(255),
+			description VARCHAR(280),
+			recommended BOOLEAN NOT NULL DEFAULT false,
+			created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+			recommended_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+			UNIQUE (title),
+			UNIQUE (song_url),
 			PRIMARY KEY (id)
 		);`,
 	}
