@@ -17,3 +17,14 @@ type Song struct {
 	CreatedAt     time.Time
 	RecommendedAt time.Time
 }
+
+// NewSong returns new song.
+func NewSong(title, author, songURL, imageURL, description string) *Song {
+	return &Song{
+		Title:       title,
+		Author:      author,
+		SongURL:     songURL,
+		ImageURL:    imageURL,
+		Description: description,
+	}
+}
