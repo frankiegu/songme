@@ -1,0 +1,39 @@
+{{define "song/success"}}
+{{template "layout/header" .}}
+
+{{template "layout/body-header" .}}
+
+    {{template "common/navbar" .}}
+    
+    <div class="container-fluid bg-sgreen text-center p-5">
+      <h2>Thanks!</h1>
+      <h4>You have successfuly added a new song.</h3>
+    </div>
+    
+    <div class="container-fluid bg-sdblue p-4">
+      <div class="row">
+        <div class="col-8 mx-auto">
+          <h4>What is next?</h4>
+          <p>Just enjoy the music. For now, let's take a look at your recommendation:
+            <br>
+            <br><strong><em>{{.Inputs.title}}</em></strong> by {{.Inputs.author}}</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="container-fluid bg-slight p-5">
+      <div class="row">
+        <div class="col-6 mx-auto">
+          <div class="embed-responsive embed-responsive-16by9 my-4">
+            <iframe class="embed-responsive-item" src="{{.Inputs.songURL}}" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{template "common/footer" .}}
+
+{{template "layout/body-footer" .}}
+
+{{template "layout/footer" .}}
+{{end}}
