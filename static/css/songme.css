@@ -1,9 +1,15 @@
 /* BG Colors */
-.bg-dblue { 
+.bg-sgreen {
+    background-color: #1abc9c;
+    /* Green */
+    color: #ffffff;
+}
+
+.bg-sdblue { 
     background-color: #474e5d; /* Dark Blue */
     color: #ffffff;
 }
-.bg-light { 
+.bg-slight { 
     background-color: #f3f3f3;
     color: #555555;
 }
@@ -27,7 +33,7 @@
     color: #4fc3f7 !important;
 }
 
-/* MARGIN - PADDING */
+/* MARGIN & PADDING */
 .form-group {
     margin-bottom: 1.5em;
 }
