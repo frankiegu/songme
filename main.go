@@ -24,8 +24,8 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	// Routes
-	http.Handle("/", controllers.Index(ev))
-	http.Handle("/add-song", controllers.AddSong(ev))
+	http.Handle("/", controllers.IndexController(ev))
+	http.Handle("/add-song", controllers.AddSongController(ev))
 
 	// Serve
 	port := "8080"
