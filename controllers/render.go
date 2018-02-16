@@ -7,7 +7,11 @@ import (
 )
 
 var (
-	templates = template.Must(template.ParseGlob("templates/**/*.html"))
+	templates = template.Must(template.New("start").Funcs(template.FuncMap{
+		"toHTML": func(html string) template.HTML {
+			return template.HTML(html)
+		},
+	}).ParseGlob("templates/**/*.html"))
 )
 
 // RenderTemplate renders given template

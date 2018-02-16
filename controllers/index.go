@@ -4,19 +4,28 @@ import (
 	"net/http"
 
 	"github.com/emre-demir/songme/common/env"
+	"github.com/emre-demir/songme/models"
 )
 
-// Index displays home page.
-func Index(ev *env.Vars) http.Handler {
+type homeViewData struct {
+	Song *models.Song
+}
+
+// IndexController handles GET requests on path '/'.
+// It shows home view with a randomly selected song.
+func IndexController(ev *env.Vars) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		p := map[string]string{
-			"PageTitle": "Songme",
-		}
 		switch r.Method {
 		case "GET":
-			RenderTemplate(w, "index/home", &p)
-		case "POST":
+			showHomeView(w, r, ev)
+		default:
 			http.NotFound(w, r)
 		}
 	})
+}
+
+func showHomeView(w http.ResponseWriter, r *http.Request, ev *env.Vars) {
+	s := ev.DB.GetRandomSong()
+	hvd := homeViewData{Song: s}
+	RenderTemplate(w, "index/home", &hvd)
 }
