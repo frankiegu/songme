@@ -11,23 +11,21 @@
           <div class="col">
             <div class="row align-items-center justify-content-center">
               <div class="col-lg-6 text-lg-right text-center">
-                <h4 class="display-4">Stairway to Heaven</h4>
-                <h5>Led Zeppelin</h5>
+                <h4 class="display-4">{{.Song.Title}}</h4>
+                <h5>{{.Song.Author}}</h5>
                 <p class="lead">
-                  The song begins in a slow tempo with acoustic instruments. 
-                  The final section is highlighted by Page's intricate guitar solo accompanying Plant's vocals that end with the plaintive 
-                  a cappella line: "And she's buying a stairway to heaven."
+                  {{.Song.Description}}
                 </p>
               </div>
               <div class="col-lg-6">
                 <div class="embed-responsive embed-responsive-16by9">
-                  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/cwFQpRTwaP0" allowfullscreen=""></iframe>
+                  <iframe class="embed-responsive-item" src="{{.Song.SongURL}}" allowfullscreen=""></iframe>
                 </div>
               </div>
             </div>
             <div class="row mt-5">
               <div class="col-lg-6 text-lg-right text-center">
-                <button class="btn mt-4 px-5 bg-sdblue">MORE </button>
+                <button class="btn mt-4 px-5 bg-sdblue">MORE</button>
               </div>
             </div>
           </div>

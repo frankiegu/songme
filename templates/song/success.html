@@ -16,7 +16,7 @@
           <h4>What is next?</h4>
           <p>Just enjoy the music. For now, let's take a look at your recommendation:
             <br>
-            <br><strong><em>{{.Inputs.title}}</em></strong> by {{.Inputs.author}}</p>
+            <br><strong><em>{{.Song.Title}}</em></strong> by {{.Song.Author}}</p>
         </div>
       </div>
     </div>
@@ -25,7 +25,7 @@
       <div class="row">
         <div class="col-6 mx-auto">
           <div class="embed-responsive embed-responsive-16by9 my-4">
-            <iframe class="embed-responsive-item" src="{{.Inputs.songURL}}" allowfullscreen></iframe>
+            <iframe class="embed-responsive-item" src="{{.Song.SongURL}}" allowfullscreen></iframe>
           </div>
         </div>
       </div>
