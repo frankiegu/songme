@@ -2,6 +2,7 @@ package datastore
 
 import (
 	"database/sql"
+	"log"
 	// Run postgresql driver.
 	_ "github.com/lib/pq"
 
@@ -51,13 +52,36 @@ func (pq *pQDatastore) CreateSong(song *models.Song) error {
 	INSERT INTO candidate_song (
 		title, 
 		author, 
-		song_url, 
+		song_url,
 		image_url, 
 		description
 	) 
 	VALUES ($1, $2, $3, $4, $5);`
 	_, err := pq.Exec(stmt, song.Title, song.Author, song.SongURL, song.ImageURL, song.Description)
 	return err
+}
+
+// GetRandomSong returns a randomly selected song.
+func (pq *pQDatastore) GetRandomSong() *models.Song {
+	song := models.Song{}
+
+	row := pq.QueryRow("SELECT * FROM candidate_song ORDER BY RANDOM() LIMIT 1")
+	err := row.Scan(
+		&song.ID,
+		&song.Title,
+		&song.Author,
+		&song.SongURL,
+		&song.ImageURL,
+		&song.Description,
+		&song.Recommended,
+		&song.CreatedAt,
+		&song.RecommendedAt,
+	)
+	if err != nil {
+		log.Println("GetRandomSong:", err)
+	}
+
+	return &song
 }
 
 // newPQDatastore returns new PQDatastore instance.
@@ -78,7 +102,7 @@ func newPQDatastore(config Config) (*pQDatastore, error) {
 			song_url VARCHAR(255) NOT NULL,
 			image_url VARCHAR(255),
 			description VARCHAR(280),
-			recommended BOOLEAN NOT NULL DEFAULT false,
+			recommended BOOLEAN NOT NULL DEFAULT false,			
 			created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
 			recommended_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
 			UNIQUE (title),
@@ -92,7 +116,7 @@ func newPQDatastore(config Config) (*pQDatastore, error) {
 			song_url VARCHAR(255) NOT NULL,
 			image_url VARCHAR(255),
 			description VARCHAR(280),
-			recommended BOOLEAN NOT NULL DEFAULT false,
+			recommended BOOLEAN NOT NULL DEFAULT false,			
 			created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
 			recommended_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
 			UNIQUE (title),

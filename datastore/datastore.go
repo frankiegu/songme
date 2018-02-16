@@ -12,11 +12,12 @@ const (
 	PostgreSQL
 )
 
-// Datastore defines necessary functions for databases.
+// Datastore defines necessary functions for managing databases.
 type Datastore interface {
 	Close()
 	Subscribe(*models.Subscriber) error
 	CreateSong(*models.Song) error
+	GetRandomSong() *models.Song
 }
 
 // NewDatastore returns new datastore instance.
