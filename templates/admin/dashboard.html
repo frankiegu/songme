@@ -1,0 +1,64 @@
+{{define "admin/dashboard"}}
+{{template "layout/header" .}}
+
+    <style>
+      button {
+        margin-top: 5px;
+        margin-bottom: 5px;
+      }
+    </style>
+
+{{template "layout/body-header" .}}
+    
+    {{template "common/navbar" .}}
+
+    <!-- Tabs -->
+    <div class="container-fluid bg-slight p-5">
+      <ul class="nav nav-pills">
+        <li class="nav-item">
+          <a class="nav-link active" href="#">Candidate Songs</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Songs in Production</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Database error -->
+    {{with .Errors.database}}
+    <div class="alert alert-danger text-center">
+      {{.}}
+    </div>
+    {{end}}
+
+    <!-- Songs -->
+    <div class="container-fluid bg-slight pb-5">
+      <!-- Rows -->
+      {{range .Songs}}
+      <div class="row py-4">
+            <div class="col-3 text-center">
+                <div class="embed-responsive embed-responsive-16by9">
+                  <a href="{{.SongURL}}" class="embed-link"></a>
+                </div>
+            </div>
+            <div class="col-8 align-self-center">
+              <h2>{{.Title}}</h2>
+              <h6>by <em>{{.Author}}</em></h6>
+              <p class="lead">{{.Description}}</p>
+            </div>
+            <div class="col-1 text-center align-self-center">
+              <button class="btn btn-primary btn-sm">SELECT</button>
+              <button class="btn btn-danger btn-sm">DELETE</button>
+            </div>
+      </div>
+      {{end}}
+    </div>
+
+    {{template "common/footer" .}}
+    
+{{template "layout/body-footer" .}}
+
+    <script src="/static/js/songme.js"></script>
+
+{{template "layout/footer" .}}
+{{end}}
