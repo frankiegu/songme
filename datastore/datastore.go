@@ -18,6 +18,9 @@ type Datastore interface {
 	Subscribe(*models.Subscriber) error
 	CreateSong(*models.Song) error
 	GetRandomSong() *models.Song
+	GetSongsFrom(string) ([]*models.Song, error)
+	GetUserByUsername(string) (*models.User, error)
+	GetUserByUUID(string) (*models.User, error)
 }
 
 // NewDatastore returns new datastore instance.

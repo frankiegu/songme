@@ -8,6 +8,8 @@ import (
 	"github.com/emre-demir/songme/common/env"
 	"github.com/emre-demir/songme/controllers"
 	"github.com/emre-demir/songme/datastore"
+	"github.com/emre-demir/songme/middleware"
+	"github.com/gorilla/mux"
 )
 
 func main() {
@@ -20,12 +22,18 @@ func main() {
 
 	ev := &env.Vars{DB: db}
 
-	// FileServer
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	r := mux.NewRouter()
 
 	// Routes
-	http.Handle("/", controllers.IndexController(ev))
-	http.Handle("/add-song", controllers.AddSongController(ev))
+	r.Handle("/", controllers.IndexController(ev)).Methods("GET")
+	r.Handle("/add-song", controllers.AddSongController(ev)).Methods("GET", "POST")
+	r.Handle("/login", controllers.LoginController(ev)).Methods("GET", "POST")
+	r.Handle("/admin/dashboard", middleware.Authorize(controllers.DashboardController(ev), ev)).Methods("GET")
+
+	// FileServer
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
+
+	http.Handle("/", middleware.PanicRecovery(r))
 
 	// Serve
 	port := "8080"

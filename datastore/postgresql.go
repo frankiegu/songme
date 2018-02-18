@@ -84,6 +84,86 @@ func (pq *pQDatastore) GetRandomSong() *models.Song {
 	return &song
 }
 
+// GetSongsFrom returns all songs from given table.
+func (pq *pQDatastore) GetSongsFrom(table string) ([]*models.Song, error) {
+	rows, err := pq.Query("SELECT * FROM " + table)
+	if err != nil {
+		log.Println("[GetSongsFrom]:", table, err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	songs := []*models.Song{}
+
+	for rows.Next() {
+		song := models.Song{}
+		err := rows.Scan(
+			&song.ID,
+			&song.Title,
+			&song.Author,
+			&song.SongURL,
+			&song.ImageURL,
+			&song.Description,
+			&song.Recommended,
+			&song.CreatedAt,
+			&song.RecommendedAt,
+		)
+		if err != nil {
+			log.Println("[GetSongsFrom]:", table, err)
+			return nil, err
+		}
+		songs = append(songs, &song)
+	}
+
+	err = rows.Err()
+	if err != nil {
+		log.Println("[GetSongsFrom]:", table, err)
+		return nil, err
+	}
+
+	return songs, nil
+}
+
+// GetUserByUsername returns user match with given username.
+func (pq *pQDatastore) GetUserByUsername(username string) (*models.User, error) {
+	user := models.User{}
+
+	row := pq.QueryRow("SELECT * FROM users WHERE username = $1 OR email = $1", username)
+	err := row.Scan(
+		&user.UUID,
+		&user.Username,
+		&user.Email,
+		&user.PasswordHash,
+		&user.Role,
+	)
+	if err != nil {
+		log.Println("GetUserByUsername:", err)
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+// GetUserByUUID returns user match with given uuid.
+func (pq *pQDatastore) GetUserByUUID(uuid string) (*models.User, error) {
+	user := models.User{}
+
+	row := pq.QueryRow("SELECT * FROM users WHERE uuid = $1", uuid)
+	err := row.Scan(
+		&user.UUID,
+		&user.Username,
+		&user.Email,
+		&user.PasswordHash,
+		&user.Role,
+	)
+	if err != nil {
+		log.Println("GetUserByUUID:", err)
+		return nil, err
+	}
+
+	return &user, nil
+}
+
 // newPQDatastore returns new PQDatastore instance.
 func newPQDatastore(config Config) (*pQDatastore, error) {
 	var prepareDBStatements = []string{
@@ -122,6 +202,16 @@ func newPQDatastore(config Config) (*pQDatastore, error) {
 			UNIQUE (title),
 			UNIQUE (song_url),
 			PRIMARY KEY (id)
+		);`,
+		`CREATE TABLE IF NOT EXISTS users (
+			uuid VARCHAR(64) NOT NULL,
+			username VARCHAR(25) NOT NULL,
+			email VARCHAR(255) NOT NULL,
+			password_hash VARCHAR(64) NOT NULL,
+			role CHAR(1) NOT NULL,
+			UNIQUE (username),
+			UNIQUE (email),
+			PRIMARY KEY (uuid)
 		);`,
 	}
 
