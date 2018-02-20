@@ -15,15 +15,12 @@ type homeViewData struct {
 // It shows home view with a randomly selected song.
 func IndexController(ev *env.Vars) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case "GET":
-			showHomeView(w, r, ev)
-		default:
-			http.NotFound(w, r)
-		}
+		showHomeView(w, r, ev)
 	})
 }
 
+// showHomeView fetches a random song, and renders home view
+// with that song.
 func showHomeView(w http.ResponseWriter, r *http.Request, ev *env.Vars) {
 	s := ev.DB.GetRandomSong()
 	hvd := homeViewData{Song: s}
