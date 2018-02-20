@@ -2,17 +2,17 @@
     <!-- Rows -->
     {{range .Songs}}
     <div class="row pt-5" id="song-row-{{.ID}}">
-          <div class="col-3 text-center">
+          <div class="col-xl-3 col-lg-4 text-center">
               <div class="embed-responsive embed-responsive-16by9">
                 <a href="{{.SongURL}}" class="embed-link"></a>
               </div>
           </div>
-          <div class="col-8 align-self-center">
+          <div class="col-xl-7 col-lg-6 text-lg-left text-center align-self-center">
             <h2>{{.Title}}</h2>
             <h6>by <em>{{.Author}}</em></h6>
             <p class="lead">{{.Description}}</p>
           </div>
-          <div class="col-1 text-center align-self-center">
+          <div class="col-xl-2 col-lg-2 text-center align-self-center">
             {{if not $.Hidden.selectButton}}
             <button class="btn btn-primary btn-sm" onclick="selectSong({{.ID}})">SELECT</button>
             {{end}}
