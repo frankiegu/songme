@@ -61,11 +61,47 @@ func (pq *pQDatastore) CreateSong(song *models.Song) error {
 	return err
 }
 
+// SelectSong transfers song with given id from
+// table 'candidate_song' to 'production_song'.
+func (pq *pQDatastore) SelectSong(id string) error {
+	stmt := `
+	INSERT INTO production_song (
+		title, 
+		author, 
+		song_url,
+		image_url, 
+		description
+	) 
+	SELECT title, author, song_url, image_url, description
+	FROM candidate_song
+	WHERE id = $1;`
+	_, err := pq.Exec(stmt, id)
+	if err == nil {
+		pq.DeleteCandidateSong(id)
+	}
+
+	return err
+}
+
+// DeleteSong deletes song from table 'production_song'.
+func (pq *pQDatastore) DeleteProductionSong(id string) error {
+	stmt := "DELETE FROM production_song WHERE id = $1;"
+	_, err := pq.Exec(stmt, id)
+	return err
+}
+
+// DeleteCandidateSong deletes song from table 'candidate_song'.
+func (pq *pQDatastore) DeleteCandidateSong(id string) error {
+	stmt := "DELETE FROM candidate_song WHERE id = $1;"
+	_, err := pq.Exec(stmt, id)
+	return err
+}
+
 // GetRandomSong returns a randomly selected song.
 func (pq *pQDatastore) GetRandomSong() *models.Song {
 	song := models.Song{}
 
-	row := pq.QueryRow("SELECT * FROM candidate_song ORDER BY RANDOM() LIMIT 1")
+	row := pq.QueryRow("SELECT * FROM production_song ORDER BY RANDOM() LIMIT 1")
 	err := row.Scan(
 		&song.ID,
 		&song.Title,
@@ -175,7 +211,7 @@ func newPQDatastore(config Config) (*pQDatastore, error) {
 			UNIQUE (email),
 			PRIMARY KEY (id)
 		);`,
-		`CREATE TABLE IF NOT EXISTS song (
+		`CREATE TABLE IF NOT EXISTS production_song (
 			id SERIAL,
 			title VARCHAR(255) NOT NULL,
 			author VARCHAR(255) NOT NULL,

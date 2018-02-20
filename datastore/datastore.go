@@ -16,9 +16,15 @@ const (
 type Datastore interface {
 	Close()
 	Subscribe(*models.Subscriber) error
+
 	CreateSong(*models.Song) error
+	SelectSong(string) error
+	DeleteCandidateSong(string) error
+	DeleteProductionSong(string) error
+
 	GetRandomSong() *models.Song
 	GetSongsFrom(string) ([]*models.Song, error)
+
 	GetUserByUsername(string) (*models.User, error)
 	GetUserByUUID(string) (*models.User, error)
 }
