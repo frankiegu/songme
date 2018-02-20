@@ -12,16 +12,24 @@
     
     {{template "common/navbar" .}}
 
+    <!-- Logout -->
+    <div class="container-fluid bg-slight text-right">
+      <form class="m-0" action="/logout" method="POST">
+        <button class="btn btn-warning mr-5" type="submit">Logout</button>
+      </form>
+    </div>
+
     <!-- Tabs -->
     <div class="container-fluid bg-slight p-5">
       <ul class="nav nav-pills">
         <li class="nav-item">
-          <a class="nav-link active" href="#">Candidate Songs</a>
+          <a class="nav-link active" href="#candidate" id="songs-candidate">Candidate Songs</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Songs in Production</a>
+          <a class="nav-link" href="#production" id="songs-production">Songs in Production</a>
         </li>
       </ul>
+      <div class="alert alert-danger mt-2 d-none" id="tab-error"></div>
     </div>
 
     <!-- Database error -->
@@ -32,26 +40,8 @@
     {{end}}
 
     <!-- Songs -->
-    <div class="container-fluid bg-slight pb-5">
-      <!-- Rows -->
-      {{range .Songs}}
-      <div class="row py-4">
-            <div class="col-3 text-center">
-                <div class="embed-responsive embed-responsive-16by9">
-                  <a href="{{.SongURL}}" class="embed-link"></a>
-                </div>
-            </div>
-            <div class="col-8 align-self-center">
-              <h2>{{.Title}}</h2>
-              <h6>by <em>{{.Author}}</em></h6>
-              <p class="lead">{{.Description}}</p>
-            </div>
-            <div class="col-1 text-center align-self-center">
-              <button class="btn btn-primary btn-sm">SELECT</button>
-              <button class="btn btn-danger btn-sm">DELETE</button>
-            </div>
-      </div>
-      {{end}}
+    <div class="container-fluid bg-slight pb-5" id="songs-container">
+      {{template "song/rows" .}}
     </div>
 
     {{template "common/footer" .}}
@@ -59,6 +49,78 @@
 {{template "layout/body-footer" .}}
 
     <script src="/static/js/songme.js"></script>
+    <script>
+      $('#songs-candidate').click(function(e){
+        e.preventDefault();
+        changeTabs(this);
+        fetchSongsFor('candidate');
+      })
+
+      $('#songs-production').click(function(e){
+        e.preventDefault();
+        changeTabs(this);
+        fetchSongsFor('production');
+      })
+
+      function changeTabs(tab) {
+        $('a.nav-link').each(function () {
+            $(this).removeClass('active');
+        })
+        $(tab).addClass('active');
+      }
+      
+      function fetchSongsFor(tab) {
+        $.ajax({
+          method: "GET",
+          url: "/songs/" + tab,
+          success: function(response) {
+            $('#songs-container').empty();
+            $('#songs-container').html(response);
+            $('#tab-error').addClass('d-none');
+            // replaceEmbedCodes is declared in songme.js
+            replaceEmbedCodes();
+          },
+          error: function() {
+            $('#tab-error').removeClass('d-none');
+            $('#tab-error').text('tab-error: Opps! Encountered error. Could not fetch ' + tab + ' songs.');
+          }
+        });
+      }
+
+      function selectSong(id) {
+        $.ajax({
+          method: "PUT",
+          url: "/songs/" + id,
+          success: function() {
+            $("#song-row-" + id).remove();
+            $('#row-error-' + id).addClass('d-none');
+          },
+          error: function() {
+            $('#row-error-' + id).removeClass('d-none');
+            $('#row-error-' + id).text('Opps! Encountered error. Could not select this song.');
+          }
+        });
+      }
+
+      function deleteSong(id) {
+        // Drop first character from href.
+        activeTab = $('a.active').attr('href').substring(1);
+        activeTab += "/"
+
+        $.ajax({
+          method: "DELETE",
+          url: "/songs/" + activeTab + id,
+          success: function() {
+            $("#song-row-" + id).remove();
+            $('#row-error-' + id).addClass('d-none');
+          },
+          error: function() {
+            $('#row-error-' + id).removeClass('d-none');
+            $('#row-error-' + id).text('Opps! Encountered error. Could not delete this song.');
+          }
+        });
+      }
+    </script>
 
 {{template "layout/footer" .}}
 {{end}}

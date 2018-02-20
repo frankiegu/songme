@@ -1,0 +1,24 @@
+{{define "song/rows"}}
+    <!-- Rows -->
+    {{range .Songs}}
+    <div class="row pt-5" id="song-row-{{.ID}}">
+          <div class="col-3 text-center">
+              <div class="embed-responsive embed-responsive-16by9">
+                <a href="{{.SongURL}}" class="embed-link"></a>
+              </div>
+          </div>
+          <div class="col-8 align-self-center">
+            <h2>{{.Title}}</h2>
+            <h6>by <em>{{.Author}}</em></h6>
+            <p class="lead">{{.Description}}</p>
+          </div>
+          <div class="col-1 text-center align-self-center">
+            {{if not $.Hidden.selectButton}}
+            <button class="btn btn-primary btn-sm" onclick="selectSong({{.ID}})">SELECT</button>
+            {{end}}
+            <button class="btn btn-danger btn-sm" onclick="deleteSong({{.ID}})">DELETE</button>
+          </div>
+    </div>
+    <div class="alert alert-danger text-center mt-2 d-none" id="row-error-{{.ID}}"></div>
+    {{end}}
+{{end}}
