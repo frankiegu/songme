@@ -10,7 +10,7 @@
       <div class="row py-5">
         <div class="col-lg-5 mx-auto">
           <h3 class="py-3">Song details</h3>
-          <form action="/add-song" method="POST">
+          <form action="/add" method="POST">
             {{with .Form.Errors.alreadyExists}}
             <div class="alert alert-danger">
               {{.}}
