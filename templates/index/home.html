@@ -25,7 +25,7 @@
             </div>
             <div class="row mt-5">
               <div class="col-lg-6 text-lg-right text-center">
-                <button class="btn mt-4 px-5 bg-sdblue">MORE</button>
+                <button class="btn mt-4 px-5 bg-sdblue" id="button-more">MORE</button>
               </div>
             </div>
           </div>
@@ -38,6 +38,11 @@
 {{template "layout/body-footer" .}}
 
     <script src="/static/js/songme.js"></script>
+    <script>
+      $('#button-more').click(function() {
+        location.reload();
+      });
+    </script>
 
 {{template "layout/footer" .}}
 {{end}}
