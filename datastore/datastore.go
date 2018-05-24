@@ -3,7 +3,7 @@ package datastore
 import (
 	"errors"
 
-	"github.com/emre-demir/songme/models"
+	"github.com/emredir/songme/models"
 )
 
 // Enumerator for supported databases.

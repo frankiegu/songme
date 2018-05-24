@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/emre-demir/songme/models"
+	"github.com/emredir/songme/models"
 	"github.com/gorilla/securecookie"
 )
 

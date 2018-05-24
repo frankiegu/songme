@@ -4,9 +4,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/emre-demir/songme/common/auth"
-	"github.com/emre-demir/songme/common/env"
-	"github.com/emre-demir/songme/models"
+	"github.com/emredir/songme/common/auth"
+	"github.com/emredir/songme/common/env"
+	"github.com/emredir/songme/models"
 )
 
 type loginViewData struct {

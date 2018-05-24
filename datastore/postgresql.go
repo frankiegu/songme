@@ -6,7 +6,7 @@ import (
 	// Run postgresql driver.
 	_ "github.com/lib/pq"
 
-	"github.com/emre-demir/songme/models"
+	"github.com/emredir/songme/models"
 )
 
 // pQDatastore handles CRUD operations on PostgreSQL database.

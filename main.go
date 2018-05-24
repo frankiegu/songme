@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/emre-demir/songme/common/env"
-	"github.com/emre-demir/songme/controllers"
-	"github.com/emre-demir/songme/datastore"
-	"github.com/emre-demir/songme/middleware"
+	"github.com/emredir/songme/common/env"
+	"github.com/emredir/songme/controllers"
+	"github.com/emredir/songme/datastore"
+	"github.com/emredir/songme/middleware"
 	"github.com/gorilla/mux"
 )
 

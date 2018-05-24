@@ -4,9 +4,9 @@ import (
 	"errors"
 	"log"
 
-	"github.com/emre-demir/songme/common/env"
-	"github.com/emre-demir/songme/common/utility"
-	"github.com/emre-demir/songme/models"
+	"github.com/emredir/songme/common/env"
+	"github.com/emredir/songme/common/utility"
+	"github.com/emredir/songme/models"
 )
 
 // LoginUserWith checks the given user credentials.

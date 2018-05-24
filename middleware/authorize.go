@@ -3,9 +3,9 @@ package middleware
 import (
 	"net/http"
 
-	"github.com/emre-demir/songme/common/env"
+	"github.com/emredir/songme/common/env"
 
-	"github.com/emre-demir/songme/common/auth"
+	"github.com/emredir/songme/common/auth"
 )
 
 // Authorize ensures user logged in.

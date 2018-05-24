@@ -1,5 +1,5 @@
 {
-	"ImportPath": "github.com/emre-demir/songme",
+	"ImportPath": "github.com/emredir/songme",
 	"GoVersion": "go1.9",
 	"GodepVersion": "v80",
 	"Packages": [

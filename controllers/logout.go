@@ -3,7 +3,7 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/emre-demir/songme/common/auth"
+	"github.com/emredir/songme/common/auth"
 )
 
 // LogoutController logouts user.
