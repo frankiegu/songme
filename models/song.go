@@ -1,11 +1,8 @@
 package models
 
-import (
-	"time"
-)
+import "time"
 
-// Song holds information about song that is used to
-// make recommendations.
+// Song represents the song that we recommend in our app.
 type Song struct {
 	ID            string
 	Title         string
@@ -18,13 +15,15 @@ type Song struct {
 	RecommendedAt time.Time
 }
 
-// NewSong returns new song.
-func NewSong(title, author, songURL, imageURL, description string) *Song {
-	return &Song{
-		Title:       title,
-		Author:      author,
-		SongURL:     songURL,
-		ImageURL:    imageURL,
-		Description: description,
-	}
+// SongStore defines the interface used to interact with the songs datastore.
+type SongStore interface {
+	Create(song *Song) error
+	Confirm(id string) error
+
+	GetRandom() (*Song, error)
+	Candidates() ([]*Song, error)
+	Productions() ([]*Song, error)
+
+	DeleteCandidate(id string) error
+	DeleteProduction(id string) error
 }
