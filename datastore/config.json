@@ -1,8 +1,0 @@
-{
-    "DBHost": "localhost",
-    "DBPort": "5432",
-    "DBUser": "username",
-    "DBPass": "password",
-    "DBName": "dbname",
-    "SSLMode": "disable"
-}
