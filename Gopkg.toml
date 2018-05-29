@@ -40,3 +40,10 @@
 [prune]
   go-tests = true
   unused-packages = true
+
+[metadata.heroku]
+  root-package = "github.com/emredir/songme"
+  go-version = "go1.10"
+  install = [ "./cmd/songme" ]
+  ensure = "false"
+  additional-tools = []
