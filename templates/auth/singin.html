@@ -1,0 +1,53 @@
+{{define "auth/signin"}}
+
+{{template "base/header" .}}    
+{{template "base/body-header" .}}
+
+      <div class="container">
+
+          <div class="row align-items-center justify-content-center">
+              <div class="col-lg-5">
+                
+              
+
+                  <div class="jumbotron">
+                    <h1 class="display-3">Sign In</h1>
+                    <hr class="my-4">
+
+                    <form action="/signin" method="POST">
+                      <fieldset>
+  
+                        <div class="form-group has-danger">
+                              <label for="username">Username</label>
+                              <input type="text" class="form-control {{if .Error.username}}is-invalid{{end}}" id="username" name="username" placeholder="Username" value="{{.Form.username}}">
+                              {{with .Error.username}}
+                              <div class="invalid-feedback">{{.}}</div>
+                              {{end}}
+                        </div>
+  
+                        <div class="form-group has-danger">
+                              <label for="password">Password</label>
+                              <input type="password" class="form-control {{if .Error.password}}is-invalid{{end}}" id="password" name="password" placeholder="Password">
+                              {{with .Error.password}}
+                              <div class="invalid-feedback">{{.}}</div>
+                              {{end}}
+                        </div>
+                    
+                        <button type="submit" class="btn btn-primary">Sign In</button>
+                      </fieldset>
+                    </form>
+                    
+                  </div>
+
+
+              </div>
+            </div>
+
+      </div>
+
+
+
+{{template "base/body-footer" .}}
+{{template "base/footer" .}}
+
+{{end}}

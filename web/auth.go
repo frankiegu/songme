@@ -1,70 +1,114 @@
 package web
 
 import (
-	"log"
 	"net/http"
 
-	"github.com/emredir/songme/common/auth"
-	"github.com/emredir/songme/common/utility"
+	"github.com/emredir/songme/internal/cookie"
 	"github.com/emredir/songme/models"
 )
 
-type loginViewData struct {
-	Form *models.Form
+// AuthInteractor defines the interface used to interact with the database for authentication.
+type AuthInteractor interface {
+	Signup(email, username, password string) (*models.User, error)
+	Signin(username, password string) (*models.User, error)
 }
 
 // AuthHandler defines authentication specific controllers.
 type AuthHandler struct {
-	userStore models.UserStore
+	AuthInteractor AuthInteractor
+	UsernameLength int
+	PasswordLength int
 }
 
-// RenderLogin renders the login page.
-func (h *AuthHandler) RenderLogin(w http.ResponseWriter, r *http.Request) {
-	RenderTemplate(w, "session/login", nil)
+/*
+
+	Controllers
+
+*/
+
+// RenderSignup renders the sign up page.
+func (h *AuthHandler) RenderSignup(w http.ResponseWriter, r *http.Request) {
+	view := NewView(r)
+	view.Render(w, "auth/signup")
 }
 
-// Login handles login process.
-func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
-	f := models.NewForm([]string{"username", "password"})
+// Signup handles sign up process.
+func (h *AuthHandler) Signup(w http.ResponseWriter, r *http.Request) {
+	view := NewView(r)
 
-	f.Populate(r)
-	f.CheckRequiredFields([]string{"username", "password"})
-	ok := f.IsValid()
-	if !ok {
-		RenderTemplate(w, "session/login", &loginViewData{Form: f})
+	email := view.FormValue("email", true)
+	username := view.FormValue("username", true)
+	password := view.FormValue("password", true)
+	password2 := view.FormValue("password2", true)
+
+	if view.HasError() {
+		view.Render(w, "auth/signup")
 		return
 	}
 
-	username := f.Inputs["username"]
-	password := f.Inputs["password"]
+	if len(username) < h.UsernameLength {
+		view.InsertFlashError("Usernames must be at least ", h.UsernameLength, " characters long")
+		view.Render(w, "auth/signup")
+		return
+	}
+	if len(password) < h.PasswordLength || len(password2) < h.PasswordLength {
+		view.InsertFlashError("Passwords must be at least ", h.PasswordLength, " characters long")
+		view.Render(w, "auth/signup")
+		return
+	}
+	if password != password2 {
+		view.InsertFlashError("Passwords must be matched")
+		view.Render(w, "auth/signup")
+		return
+	}
 
-	u, err := h.userStore.ByUsername(username)
+	_, err := h.AuthInteractor.Signup(email, username, password)
 	if err != nil {
-		f.Errors["login"] = "Please check your username and password."
-		RenderTemplate(w, "session/login", &loginViewData{Form: f})
+		view.InsertFlashError(err.Error())
+		view.Render(w, "auth/signup")
 		return
 	}
 
-	if utility.SHA256String(password) != u.PasswordHash {
-		f.Errors["login"] = "Please check your username and password."
-		RenderTemplate(w, "session/login", &loginViewData{Form: f})
+	http.Redirect(w, r, "/signin", http.StatusFound)
+}
+
+// RenderSignin renders the sign in page.
+func (h *AuthHandler) RenderSignin(w http.ResponseWriter, r *http.Request) {
+	view := NewView(r)
+	view.Render(w, "auth/signin")
+}
+
+// Signin handles sign in process.
+func (h *AuthHandler) Signin(w http.ResponseWriter, r *http.Request) {
+	view := NewView(r)
+
+	username := view.FormValue("username", true)
+	password := view.FormValue("password", true)
+
+	if view.HasError() {
+		view.Render(w, "auth/signin")
 		return
 	}
 
-	log.Println("User logged in:", u.Username)
-
-	err = auth.SetSessionCookie(w, u)
+	user, err := h.AuthInteractor.Signin(username, password)
 	if err != nil {
-		f.Errors["login"] = "Opps! Something went wrong. Please try again."
-		RenderTemplate(w, "session/login", &loginViewData{Form: f})
+		view.InsertFlashError(err.Error())
+		view.Render(w, "auth/signin")
 		return
 	}
 
-	http.Redirect(w, r, "/admin/dashboard", http.StatusFound)
+	err = cookie.Set(w, user.ID)
+	if err != nil {
+		view.InsertFlashError("Opps! Something went wrong. Error: ", err.Error())
+		view.Render(w, "auth/signin")
+		return
+	}
+
+	http.Redirect(w, r, "/user/"+user.Username, http.StatusFound)
 }
 
 // Logout logouts user.
 func (h *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {
-	auth.ClearSessionCookie(w)
-	http.Redirect(w, r, "/login", http.StatusFound)
+	cookie.Clear(w)
+	http.Redirect(w, r, "/", http.StatusFound)
 }
