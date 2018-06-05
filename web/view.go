@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"log"
+	"math"
 	"net/http"
 	"strings"
 
@@ -18,6 +19,15 @@ func init() {
 	templates = template.Must(template.New("t").Funcs(template.FuncMap{
 		"toHTML": func(html string) template.HTML {
 			return template.HTML(html)
+		},
+		"repeating": func(n int) []int {
+			return make([]int, n)
+		},
+		"sum": func(a, b int) int {
+			return a + b
+		},
+		"sub": func(a, b int) int {
+			return a - b
 		},
 	}).ParseFiles("templates/base.html"))
 
@@ -59,7 +69,7 @@ func (v *View) HasError() bool {
 // FormValue wraps http.Request.FormValue.
 // It extracts the form value and generates an error if required is true.
 func (v *View) FormValue(input string, required bool) string {
-	value := strings.TrimSpace(strings.Replace(v.r.FormValue(input), " ", "", -1))
+	value := strings.TrimSpace(v.r.FormValue(input))
 	if required && value == "" {
 		v.InsertError(input, "Please enter a valid input")
 	} else {
@@ -123,4 +133,41 @@ func (v *View) InsertSong(song *models.Song) {
 // InsertSongs inserts slice of songs into view.
 func (v *View) InsertSongs(songs []*models.Song) {
 	v.Data["Songs"] = songs
+}
+
+// InsertPagination inserts pagination info into view.
+func (v *View) InsertPagination(pagination *Pagination) {
+	v.Data["Pagination"] = pagination
+}
+
+/*
+
+	Pagination
+
+*/
+
+// Pagination will give pagination feature to our views.
+type Pagination struct {
+	Page       int
+	Start      int
+	BarSize    int
+	TotalPages int
+}
+
+func newPagination(total, perSize, barSize, page int) *Pagination {
+	totalPages := int(math.Ceil(float64(total) / float64(perSize)))
+	start := 1
+
+	if totalPages < barSize {
+		barSize = totalPages
+	} else {
+		if page > 2 {
+			start = page - 2
+		}
+		if start+barSize-1 >= totalPages {
+			start = totalPages - barSize + 1
+		}
+	}
+
+	return &Pagination{Page: page, Start: start, BarSize: barSize, TotalPages: totalPages}
 }
