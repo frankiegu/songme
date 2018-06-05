@@ -3,20 +3,57 @@ package web
 import (
 	"net/http"
 
+	"github.com/emredir/songme"
 	"github.com/emredir/songme/models"
+
 	"github.com/gorilla/mux"
 )
 
+// Store packs store interfaces.
+type Store struct {
+	User models.UserStore
+	Role models.RoleStore
+	Song models.SongStore
+}
+
+// Interactor packs interactor interfaces.
+type Interactor struct {
+	Auth AuthInteractor
+	Song SongInteractor
+}
+
 // NewServer returns a new server.
-func NewServer(userStore models.UserStore, songStore models.SongStore) *Server {
+func NewServer(store Store, interactor Interactor) *Server {
+	middleware := Middleware{
+		userStore: store.User,
+	}
+	auth := AuthHandler{
+		AuthInteractor: interactor.Auth,
+		UsernameLength: songme.GetConfig().UsernameLength,
+		PasswordLength: songme.GetConfig().PasswordLength,
+	}
+	main := MainHandler{
+		songStore: store.Song,
+	}
+	song := SongHandler{
+		songInteractor:    interactor.Song,
+		descriptionLength: songme.GetConfig().SongDescriptionLength,
+		songsPerPage:      songme.GetConfig().SongsPerPage,
+	}
+	admin := AdminHandler{
+		songStore: store.Song,
+	}
+
 	server := &Server{
-		middleware: &Middleware{userStore},
-		auth:       &AuthHandler{userStore},
-		admin:      &AdminHandler{songStore},
-		song:       &SongHandler{songStore},
+		middleware: &middleware,
+		auth:       &auth,
+		main:       &main,
+		song:       &song,
+		admin:      &admin,
 		router:     mux.NewRouter(),
 	}
 	server.buildRoutes()
+
 	return server
 }
 
@@ -24,8 +61,9 @@ func NewServer(userStore models.UserStore, songStore models.SongStore) *Server {
 type Server struct {
 	middleware *Middleware
 	auth       *AuthHandler
-	admin      *AdminHandler
+	main       *MainHandler
 	song       *SongHandler
+	admin      *AdminHandler
 	router     *mux.Router
 }
 
@@ -39,30 +77,36 @@ func (s *Server) buildRoutes() {
 	s.router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 
 	// Main router
-	s.router.HandleFunc("/login", s.auth.RenderLogin).Methods("GET")
-	s.router.HandleFunc("/login", s.auth.Login).Methods("POST")
+	s.router.HandleFunc("/", s.main.Home).Methods("GET")
+
+	// Auth router
+	s.router.HandleFunc("/signup", s.auth.RenderSignup).Methods("GET")
+	s.router.HandleFunc("/signup", s.auth.Signup).Methods("POST")
+	s.router.HandleFunc("/signin", s.auth.RenderSignin).Methods("GET")
+	s.router.HandleFunc("/signin", s.auth.Signin).Methods("POST")
 	s.router.HandleFunc("/logout", s.auth.Logout).Methods("POST")
-	s.router.HandleFunc("/", s.song.Index).Methods("GET")
-	s.router.HandleFunc("/add", s.song.New).Methods("GET")
-	s.router.HandleFunc("/add", s.song.Create).Methods("POST")
+
+	// Song router
+	s.router.HandleFunc("/recommend", s.song.New).Methods("GET")
+	s.router.HandleFunc("/recommend", s.song.Create).Methods("POST")
+	s.router.HandleFunc("/songs", s.song.Songs).Methods("GET")
+	s.router.HandleFunc("/songs/page/{page:[0-9]+}", s.song.Songs).Methods("GET")
+
+	songsRouter := s.router.PathPrefix("/songs").Subrouter()
+	songsRouter.HandleFunc("/{id}", s.song.Confirm).Methods("PUT")
+	songsRouter.HandleFunc("/{id}", s.song.Delete).Methods("DELETE")
+	songsRouter.HandleFunc("/candidate", s.song.Songs).Methods("GET")
+	songsRouter.HandleFunc("/production", s.song.Songs).Methods("GET")
 
 	// Admin router
 	adminRouter := s.router.PathPrefix("/admin").Subrouter()
 	adminRouter.HandleFunc("/dashboard", s.admin.Dashboard).Methods("GET")
 
-	// Songs router
-	songsRouter := s.router.PathPrefix("/songs").Subrouter()
-	songsRouter.HandleFunc("/{id}", s.song.Confirm).Methods("PUT")
-	songsRouter.HandleFunc("/candidate", s.song.Candidates).Methods("GET")
-	songsRouter.HandleFunc("/production", s.song.Productions).Methods("GET")
-	songsRouter.HandleFunc("/candidate/{id}", s.song.DeleteCandidate).Methods("DELETE")
-	songsRouter.HandleFunc("/production/{id}", s.song.DeleteProduction).Methods("DELETE")
-
 	// Recover panics
 	s.router.Use(s.middleware.PanicRecovery)
 
 	// Authorize admin router
-	adminRouter.Use(s.middleware.Authorize)
+	adminRouter.Use(s.middleware.Admin)
 
 	// Authorize songs router
 	songsRouter.Use(s.middleware.Authorize)
