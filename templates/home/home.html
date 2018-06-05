@@ -1,0 +1,54 @@
+{{define "home/home"}}
+
+{{template "base/header" .}}
+{{template "base/body-header" .}}
+
+    <div class="container">
+
+        <div class="page-header" id="banner">
+            <div class="row">
+              <!-- col-lg-8 col-md-7 col-sm-6 -->
+              <div class="col">
+                <blockquote class="blockquote">
+                    <p class="small">A man should hear a little music, read a little poetry, and see a fine picture every day of his life...</p>
+                    <footer class="blockquote-footer">Johann Wolfgang von Goethe</footer>
+                </blockquote>
+                <hr class="my-4">
+              </div>
+            </div>
+        </div>
+
+        <div class="container recommend px-4">
+            <div class="row align-items-center justify-content-center">
+
+                <div class="col-lg-5 text-center">
+                    <h1>{{.Song.Title}}</h1>
+                    <h6 class="text-muted"><em>{{.Song.Artist}}</em></h6>
+                    <p class="lead mt-4">{{.Song.Description}}</p>
+
+                    <div class="btn-group mt-5">
+                        <button type="button" id="button-more" class="btn btn-md btn-outline-secondary">More</button>
+                    </div>
+                </div>
+    
+                <div class="col-lg-6">
+                    <div class="embed-responsive embed-responsive-16by9">
+                      <a href="{{.Song.SongURL}}" class="embed-link"></a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    
+{{template "base/body-footer" .}}
+
+    <script>
+      $('#button-more').click(function() {
+        location.reload();
+      });
+    </script>
+
+{{template "base/footer" .}}
+{{end}}
