@@ -1,41 +1,23 @@
 {{define "song/success"}}
-{{template "layout/header" .}}
 
-{{template "layout/body-header" .}}
+{{template "base/header" .}}
+{{template "base/body-header" .}}
 
-    {{template "common/navbar" .}}
+
+    <div class="container">
     
-    <div class="container-fluid bg-sgreen text-center p-5">
-      <h2>Thanks!</h1>
-      <h4>You have successfuly added a new song.</h3>
-    </div>
-    
-    <div class="container-fluid bg-sdblue p-4">
-      <div class="row">
-        <div class="col-8 mx-auto">
-          <h4>What is next?</h4>
-          <p>Just enjoy the music. For now, let's take a look at your recommendation:
-            <br>
-            <br><strong><em>{{.Song.Title}}</em></strong> by {{.Song.Author}}</p>
+        <div class="row">
+            <div class="col">
+              <h1 class="display-3">Thanks!</h1>
+              <p class="lead">You have successfuly added a new song.</p>
+              <hr>  
+            </div>
         </div>
-      </div>
+
     </div>
+
     
-    <div class="container-fluid bg-slight p-5">
-      <div class="row">
-        <div class="col-6 mx-auto">
-          <div class="embed-responsive embed-responsive-16by9 my-4">
-            <a href="{{.Song.SongURL}}" class="embed-link"></a>
-          </div>
-        </div>
-      </div>
-    </div>
+{{template "base/body-footer" .}}
+{{template "base/footer" .}}
 
-    {{template "common/footer" .}}
-
-{{template "layout/body-footer" .}}
-
-    <script src="/static/js/songme.js"></script>
-
-{{template "layout/footer" .}}
 {{end}}

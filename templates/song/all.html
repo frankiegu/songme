@@ -1,0 +1,37 @@
+{{define "song/all"}}
+
+{{template "base/header" .}}
+{{template "base/body-header" .}}
+
+
+      <div class="container">
+
+        <div class="row">
+
+            {{range .Songs}}
+                <div class="col-md-4">
+                    <div class="card mb-4 box-shadow">
+                      <div class="card-img-top embed-responsive embed-responsive-16by9">
+                          <a href="{{.SongURL}}" class="embed-link"></a>
+                      </div>
+                      <div class="card-body">
+                        <p class="card-text">{{.Description}}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <p><span class="text-muted">{{.Title}}</span> by <strong>{{.Artist}}</strong></p>
+                          <!-- <small class="text-muted">9 mins</small> -->
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            {{end}}
+            
+        </div>
+      </div>
+
+    {{template "common/pagination" .Pagination}}
+
+
+{{template "base/body-footer" .}}
+{{template "base/footer" .}}
+
+{{end}}
