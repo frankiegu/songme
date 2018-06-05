@@ -7,16 +7,18 @@ import (
 
 // Environment variables for Songme.
 const (
-	EnvPlatform       = "ENV"
-	EnvPort           = "PORT"
-	EnvDatabaseURL    = "DATABASE_URL"
-	EnvSongmeAdmin    = "SONGME_ADMIN"
-	EnvCookieName     = "COOKIE_NAME"
-	EnvCookieHashKey  = "COOKIE_HASH_KEY"
-	EnvCookieBlockKey = "COOKIE_BLOCK_KEY"
-	EnvUsernameLength = "USERNAME_LENGTH"
-	EnvPasswordLength = "PASSWORD_LENGTH"
-	EnvHashCost       = "HASH_COST"
+	EnvPlatform              = "ENV"
+	EnvPort                  = "PORT"
+	EnvDatabaseURL           = "DATABASE_URL"
+	EnvSongmeAdmin           = "SONGME_ADMIN"
+	EnvCookieName            = "COOKIE_NAME"
+	EnvCookieHashKey         = "COOKIE_HASH_KEY"
+	EnvCookieBlockKey        = "COOKIE_BLOCK_KEY"
+	EnvUsernameLength        = "USERNAME_LENGTH"
+	EnvPasswordLength        = "PASSWORD_LENGTH"
+	EnvHashCost              = "HASH_COST"
+	EnvSongDescriptionLength = ""
+	EnvSongsPerPage          = "SONGS_PER_PAGE"
 )
 
 // Env retrieves the value of the environment variable named by the key.
@@ -45,16 +47,18 @@ var config Config
 
 // Config represents the configuration variables.
 type Config struct {
-	Env            string
-	Port           string
-	DatabaseURL    string
-	SongmeAdmin    string
-	CookieName     string
-	CookieHashKey  string
-	CookieBlockKey string
-	UsernameLength int
-	PasswordLength int
-	HashCost       int
+	Env                   string
+	Port                  string
+	DatabaseURL           string
+	SongmeAdmin           string
+	CookieName            string
+	CookieHashKey         string
+	CookieBlockKey        string
+	UsernameLength        int
+	PasswordLength        int
+	HashCost              int
+	SongDescriptionLength int
+	SongsPerPage          int
 }
 
 // GetConfig returns a copy of the config object since we want config object to be immutable.
@@ -81,5 +85,8 @@ func init() {
 		UsernameLength: EnvInt(EnvUsernameLength, 5),
 		PasswordLength: EnvInt(EnvPasswordLength, 6),
 		HashCost:       EnvInt(EnvHashCost, 10),
+
+		SongDescriptionLength: EnvInt(EnvSongDescriptionLength, 280),
+		SongsPerPage:          EnvInt(EnvSongsPerPage, 20),
 	}
 }
