@@ -4,15 +4,17 @@ import "time"
 
 // Song represents the song that we recommend in our app.
 type Song struct {
-	ID            string
-	Title         string
-	Author        string
-	SongURL       string
-	ImageURL      string
-	Description   string
-	Recommended   bool
-	CreatedAt     time.Time
-	RecommendedAt time.Time
+	ID          string
+	Title       string
+	Artist      string
+	SongURL     string
+	ImageURL    *string // nullable in db.
+	Description *string // nullable in db.
+	Confirmed   bool
+	CreatedAt   time.Time
+	ConfirmedAt *time.Time // nullable in db.
+	UserID      *string    // nullable in db.
+	User        *User      // nullable in db.
 }
 
 // SongStore defines the interface used to interact with the songs datastore.
@@ -21,9 +23,7 @@ type SongStore interface {
 	Confirm(id string) error
 
 	GetRandom() (*Song, error)
-	Candidates() ([]*Song, error)
-	Productions() ([]*Song, error)
+	All(confirmed bool, limit, offset int) ([]*Song, int, error)
 
-	DeleteCandidate(id string) error
-	DeleteProduction(id string) error
+	Delete(id string) error
 }
