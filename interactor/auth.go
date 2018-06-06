@@ -89,3 +89,55 @@ func (a *Auth) Signin(username, password string) (*models.User, error) {
 
 	return user, nil
 }
+
+// UpdatePassword updates user's password hash.
+func (a *Auth) UpdatePassword(email, oldPassword, newPassword string) error {
+	user, err := a.UserStore.ByEmail(email)
+	if err != nil {
+		return ErrWrongCredentials
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(oldPassword))
+	if err != nil {
+		return ErrWrongCredentials
+	}
+
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(newPassword), songme.GetConfig().HashCost)
+	if err != nil {
+		return ErrInternal
+	}
+
+	err = a.UserStore.UpdatePassword(email, string(passwordHash))
+	if err != nil {
+		return ErrInternal
+	}
+
+	log.Println("[interactor.Signin]: User's password changed", user.Username)
+	return nil
+}
+
+// UpdateEmail updates user's email address.
+func (a *Auth) UpdateEmail(old, new, password string) error {
+	user, _ := a.UserStore.ByEmail(new)
+	if user != nil {
+		return ErrEmailExists
+	}
+
+	user, err := a.UserStore.ByEmail(old)
+	if err != nil {
+		return ErrWrongCredentials
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
+	if err != nil {
+		return ErrWrongCredentials
+	}
+
+	err = a.UserStore.UpdateEmail(old, new)
+	if err != nil {
+		return ErrInternal
+	}
+
+	log.Println("[interactor.Signin]: User's email changed", user.Username, old, " to ", new)
+	return nil
+}

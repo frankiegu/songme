@@ -107,3 +107,17 @@ func (s *UserStore) ByUsername(username string) (*models.User, error) {
 	}
 	return &user, nil
 }
+
+// UpdatePassword updates user's password to new password hash.
+func (s *UserStore) UpdatePassword(email, passwordHash string) error {
+	stmt := "UPDATE users SET password_hash = $1 WHERE email = $2;"
+	_, err := s.DB.Exec(stmt, passwordHash, email)
+	return err
+}
+
+// UpdateEmail updates user's email address from old to new.
+func (s *UserStore) UpdateEmail(old, new string) error {
+	stmt := "UPDATE users SET email = $1 WHERE email = $2;"
+	_, err := s.DB.Exec(stmt, new, old)
+	return err
+}

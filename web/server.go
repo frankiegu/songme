@@ -83,15 +83,20 @@ func (s *Server) buildRoutes() {
 	// FileServer
 	s.router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 
-	// Main router
+	// Main routes
 	s.router.HandleFunc("/", s.main.Home).Methods("GET")
 
-	// Auth router
+	// Auth routes
 	s.router.HandleFunc("/signup", s.auth.RenderSignup).Methods("GET")
 	s.router.HandleFunc("/signup", s.auth.Signup).Methods("POST")
 	s.router.HandleFunc("/signin", s.auth.RenderSignin).Methods("GET")
 	s.router.HandleFunc("/signin", s.auth.Signin).Methods("POST")
-	s.router.HandleFunc("/logout", s.auth.Logout).Methods("GET", "POST")
+	// Authorized auth routes
+	s.router.Handle("/logout", s.middleware.Authorize(http.HandlerFunc(s.auth.Logout))).Methods("GET", "POST")
+	s.router.Handle("/update-password", s.middleware.Authorize(http.HandlerFunc(s.auth.RenderUpdatePassword))).Methods("GET")
+	s.router.Handle("/update-password", s.middleware.Authorize(http.HandlerFunc(s.auth.UpdatePassword))).Methods("POST")
+	s.router.Handle("/update-email", s.middleware.Authorize(http.HandlerFunc(s.auth.RenderUpdateEmail))).Methods("GET")
+	s.router.Handle("/update-email", s.middleware.Authorize(http.HandlerFunc(s.auth.UpdateEmail))).Methods("POST")
 
 	// Song router
 	s.router.HandleFunc("/recommend", s.song.New).Methods("GET")

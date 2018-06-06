@@ -31,4 +31,7 @@ type UserStore interface {
 	ByID(id string) (*User, error)
 	ByEmail(email string) (*User, error)
 	ByUsername(username string) (*User, error)
+
+	UpdatePassword(email, passwordHash string) error
+	UpdateEmail(old, new string) error
 }

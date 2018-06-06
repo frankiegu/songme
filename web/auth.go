@@ -3,6 +3,7 @@ package web
 import (
 	"net/http"
 
+	"github.com/emredir/songme/internal/context"
 	"github.com/emredir/songme/internal/cookie"
 	"github.com/emredir/songme/models"
 )
@@ -11,6 +12,8 @@ import (
 type AuthInteractor interface {
 	Signup(email, username, password string) (*models.User, error)
 	Signin(username, password string) (*models.User, error)
+	UpdateEmail(old, new, password string) error
+	UpdatePassword(email, oldPassword, newPassword string) error
 }
 
 // AuthHandler defines authentication specific controllers.
@@ -111,4 +114,88 @@ func (h *AuthHandler) Signin(w http.ResponseWriter, r *http.Request) {
 func (h *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {
 	cookie.Clear(w)
 	http.Redirect(w, r, "/", http.StatusFound)
+}
+
+// RenderUpdatePassword renders the password update template.
+func (h *AuthHandler) RenderUpdatePassword(w http.ResponseWriter, r *http.Request) {
+	view := NewView(r)
+	view.Render(w, "auth/password")
+}
+
+// UpdatePassword handles password changing process.
+func (h *AuthHandler) UpdatePassword(w http.ResponseWriter, r *http.Request) {
+	view := NewView(r)
+
+	user := context.User(r.Context())
+	if user == nil {
+		http.Redirect(w, r, "/signin", http.StatusFound)
+		return
+	}
+
+	email := user.Email
+	oldPassword := view.FormValue("oldPassword", true)
+	newPassword := view.FormValue("newPassword", true)
+	confirmPassword := view.FormValue("confirmPassword", true)
+
+	if view.HasError() {
+		view.Render(w, "auth/password")
+		return
+	}
+
+	if len(newPassword) < h.PasswordLength || len(confirmPassword) < h.PasswordLength {
+		view.InsertFlashError("Passwords must be at least ", h.PasswordLength, " characters long")
+		view.Render(w, "auth/password")
+		return
+	}
+	if newPassword != confirmPassword {
+		view.InsertFlashError("Passwords must be matched")
+		view.Render(w, "auth/password")
+		return
+	}
+
+	err := h.AuthInteractor.UpdatePassword(email, oldPassword, newPassword)
+	if err != nil {
+		view.InsertFlashError(err.Error())
+		view.Render(w, "auth/password")
+		return
+	}
+
+	view.InsertFlash("Your password succesfully changed")
+	view.Render(w, "auth/password")
+}
+
+// RenderUpdateEmail renders the email update template.
+func (h *AuthHandler) RenderUpdateEmail(w http.ResponseWriter, r *http.Request) {
+	view := NewView(r)
+	view.Render(w, "auth/email")
+}
+
+// UpdateEmail handles email changing process.
+func (h *AuthHandler) UpdateEmail(w http.ResponseWriter, r *http.Request) {
+	view := NewView(r)
+
+	user := context.User(r.Context())
+	if user == nil {
+		http.Redirect(w, r, "/signin", http.StatusFound)
+		return
+	}
+
+	oldEmail := user.Email
+	newEmail := view.FormValue("newEmail", true)
+	password := view.FormValue("password", true)
+
+	if view.HasError() {
+		view.Render(w, "auth/email")
+		return
+	}
+
+	err := h.AuthInteractor.UpdateEmail(oldEmail, newEmail, password)
+	if err != nil {
+		view.InsertFlashError(err.Error())
+		view.Render(w, "auth/email")
+		return
+	}
+
+	view.InsertFlash("Your email succesfully changed to ", newEmail)
+	view.Render(w, "auth/email")
 }
