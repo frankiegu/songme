@@ -91,7 +91,7 @@ func (s *Server) buildRoutes() {
 	s.router.HandleFunc("/signup", s.auth.Signup).Methods("POST")
 	s.router.HandleFunc("/signin", s.auth.RenderSignin).Methods("GET")
 	s.router.HandleFunc("/signin", s.auth.Signin).Methods("POST")
-	s.router.HandleFunc("/logout", s.auth.Logout).Methods("POST")
+	s.router.HandleFunc("/logout", s.auth.Logout).Methods("GET", "POST")
 
 	// Song router
 	s.router.HandleFunc("/recommend", s.song.New).Methods("GET")

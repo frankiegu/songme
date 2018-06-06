@@ -51,13 +51,20 @@
                       <a class="nav-link" href="/songs">All Songs</a>
                   </li>
                   <li class="nav-item">
-                          <a class="nav-link" href="/recommend">Share Song</a>
+                      <a class="nav-link" href="/recommend">Share Song</a>
                   </li>
                 
                   {{if .CurrentUser}}
-                  <li class="nav-item">
-                      <a class="nav-link" href="/user/{{.CurrentUser.Username}}">Profile</a>
-                  </li>
+                  <li class="nav-item dropdown">
+                      <a class=" nav-link dropdown-toggle" data-toggle="dropdown" href="#" id="account"><img src="{{ .CurrentUser.AvatarURL }}" class="rounded-circle shadow-sm" height="20" width="20"> Account <b class="caret"></b></a>
+                      <div class="dropdown-menu" aria-labelledby="account">
+                          <a class="dropdown-item" href="/user/{{ .CurrentUser.Username }}">Profile</a>
+                          <a class="dropdown-item" href="/update-password">Change Password</a>
+                          <a class="dropdown-item" href="/update-email">Change Email</a>
+                          <div class="dropdown-divider"></div>
+                          <a class="dropdown-item" href="/logout">Logout</a>
+                      </div>
+                   </li>
                   {{end}}
               </ul>
             </div>
