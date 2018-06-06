@@ -116,6 +116,9 @@ func (s *Server) buildRoutes() {
 	// Recover panics
 	s.router.Use(s.middleware.PanicRecovery)
 
+	// User via session
+	s.router.Use(s.middleware.UserViaSession)
+
 	// Authorize admin router
 	adminRouter.Use(s.middleware.Admin)
 

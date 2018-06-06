@@ -56,7 +56,6 @@ func Set(w http.ResponseWriter, id string) error {
 func Get(r *http.Request) (map[string]string, error) {
 	cookie, err := r.Cookie(cookieName)
 	if err != nil {
-		log.Println("[cookie.Get]:", err)
 		return nil, err
 	}
 

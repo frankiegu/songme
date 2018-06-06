@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/emredir/songme/internal/context"
 	"github.com/emredir/songme/models"
 )
 
@@ -36,10 +37,12 @@ func init() {
 
 // NewView returns a new view object.
 func NewView(r *http.Request) *View {
-	return &View{
+	view := &View{
 		r:    r,
 		Data: make(map[string]interface{}),
 	}
+	view.InserCurrentUser(context.User(r.Context()))
+	return view
 }
 
 // View will hold the data that will be inserted in our views.

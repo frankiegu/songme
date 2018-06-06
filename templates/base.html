@@ -1,5 +1,4 @@
 {{define "base/header"}}
-
 <!DOCTYPE HTML>
 <html lang="en">
 
@@ -20,8 +19,6 @@
     <link rel="stylesheet" href="/static/css/custom.min.css">
 
     <!-- Font -->
-
-
 {{end}}
 
 
@@ -59,7 +56,7 @@
                 
                   {{if .CurrentUser}}
                   <li class="nav-item">
-                      <a class="nav-link" href="/user/{{.CurrentUser.UserName}}">Profile</a>
+                      <a class="nav-link" href="/user/{{.CurrentUser.Username}}">Profile</a>
                   </li>
                   {{end}}
               </ul>
@@ -94,7 +91,6 @@
         {{end}}
         {{end}}
     </div>
-
 {{end}}
 
 
@@ -110,6 +106,7 @@
     <script src="/static/js/popper.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
     <script src="/static/js/custom.js"></script>
+    <script src="/static/js/songme.js"></script>
 {{end}}
 
 
