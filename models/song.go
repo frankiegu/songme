@@ -17,6 +17,11 @@ type Song struct {
 	User        *User      // nullable in db.
 }
 
+// DateString represents created at in readable format.
+func (s *Song) DateString() string {
+	return s.CreatedAt.Format("02.01.2006")
+}
+
 // SongStore defines the interface used to interact with the songs datastore.
 type SongStore interface {
 	Create(song *Song) error
@@ -24,6 +29,7 @@ type SongStore interface {
 
 	GetRandom() (*Song, error)
 	All(confirmed bool, limit, offset int) ([]*Song, int, error)
+	UserSongs(id string, limit, offset int) ([]*Song, int, error)
 
 	Delete(id string) error
 }

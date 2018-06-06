@@ -40,6 +40,11 @@ func NewServer(store Store, interactor Interactor) *Server {
 		descriptionLength: songme.GetConfig().SongDescriptionLength,
 		songsPerPage:      songme.GetConfig().SongsPerPage,
 	}
+	user := UserHandler{
+		userStore:    store.User,
+		songStore:    store.Song,
+		songsPerPage: songme.GetConfig().SongsPerPage,
+	}
 	admin := AdminHandler{
 		songStore: store.Song,
 	}
@@ -49,6 +54,7 @@ func NewServer(store Store, interactor Interactor) *Server {
 		auth:       &auth,
 		main:       &main,
 		song:       &song,
+		user:       &user,
 		admin:      &admin,
 		router:     mux.NewRouter(),
 	}
@@ -63,6 +69,7 @@ type Server struct {
 	auth       *AuthHandler
 	main       *MainHandler
 	song       *SongHandler
+	user       *UserHandler
 	admin      *AdminHandler
 	router     *mux.Router
 }
@@ -97,6 +104,10 @@ func (s *Server) buildRoutes() {
 	songsRouter.HandleFunc("/{id}", s.song.Delete).Methods("DELETE")
 	songsRouter.HandleFunc("/candidate", s.song.Songs).Methods("GET")
 	songsRouter.HandleFunc("/production", s.song.Songs).Methods("GET")
+
+	// User router
+	s.router.HandleFunc("/user/{username}", s.user.Profile).Methods("GET")
+	s.router.HandleFunc("/user/{username}/page/{page:[0-9]+}", s.user.Profile).Methods("GET")
 
 	// Admin router
 	adminRouter := s.router.PathPrefix("/admin").Subrouter()

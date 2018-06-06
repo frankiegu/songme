@@ -1,5 +1,10 @@
 package models
 
+import (
+	"crypto/md5"
+	"fmt"
+)
+
 // User represents the user in our system.
 type User struct {
 	ID           string
@@ -12,6 +17,11 @@ type User struct {
 // IsAdmin tells whether the user is admin.
 func (u *User) IsAdmin() bool {
 	return u.Role.Has(PermAdmin)
+}
+
+// AvatarURL returns user's gravatar URL
+func (u *User) AvatarURL() string {
+	return fmt.Sprintf("//www.gravatar.com/avatar/%x", md5.Sum([]byte(u.Email)))
 }
 
 // UserStore defines the interface used to interact with the users datastore.

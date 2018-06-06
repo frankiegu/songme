@@ -146,6 +146,55 @@ func (s *SongStore) All(confirmed bool, limit, offset int) ([]*models.Song, int,
 	return songs, totalCount, nil
 }
 
+// UserSongs returns all songs recommended by user with given id.
+func (s *SongStore) UserSongs(id string, limit, offset int) ([]*models.Song, int, error) {
+	// As we know, OFFSET solution leads to poor performance.
+	// Refactor if necessary.
+	stmt := `
+	SELECT *, COUNT(user_id) OVER() AS total_count
+	FROM songs 
+	WHERE user_id = $1
+	ORDER BY created_at DESC 
+	LIMIT $2
+	OFFSET $3;`
+	rows, err := s.DB.Query(stmt, id, limit, offset)
+	if err != nil {
+		return nil, 0, err
+	}
+	defer rows.Close()
+
+	totalCount := 0
+	songs := []*models.Song{}
+	for rows.Next() {
+		song := models.Song{}
+		err := rows.Scan(
+			&song.ID,
+			&song.Title,
+			&song.Artist,
+			&song.SongURL,
+			&song.ImageURL,
+			&song.Description,
+			&song.Confirmed,
+			&song.CreatedAt,
+			&song.ConfirmedAt,
+			&song.UserID,
+			&totalCount,
+		)
+		if err != nil {
+			return nil, 0, err
+		}
+		err = s.recommender(&song)
+		if err != nil {
+			return nil, 0, err
+		}
+		songs = append(songs, &song)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, 0, err
+	}
+	return songs, totalCount, nil
+}
+
 // Delete deletes song from the database.
 func (s *SongStore) Delete(id string) error {
 	stmt := "DELETE FROM songs WHERE id = $1;"

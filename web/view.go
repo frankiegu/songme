@@ -78,6 +78,16 @@ func (v *View) FormValue(input string, required bool) string {
 	return value
 }
 
+// InserCurrenttUser inserts current user into view.
+func (v *View) InserCurrenttUser(user *models.User) {
+	v.Data["CurrentUser"] = user
+}
+
+// InsertUser inserts user into view.
+func (v *View) InsertUser(user *models.User) {
+	v.Data["User"] = user
+}
+
 // InsertFlash inserts a flash message into view.
 func (v *View) InsertFlash(a ...interface{}) {
 	message := fmt.Sprint(a...)
@@ -133,6 +143,16 @@ func (v *View) InsertSongs(songs []*models.Song) {
 // InsertPagination inserts pagination info into view.
 func (v *View) InsertPagination(pagination *Pagination) {
 	v.Data["Pagination"] = pagination
+}
+
+// InsertOther inserts another key, value pair into view.
+func (v *View) InsertOther(key string, value interface{}) {
+	other, ok := v.Data["Other"].(map[string]interface{})
+	if !ok {
+		v.Data["Other"] = map[string]interface{}{key: value}
+		return
+	}
+	other[key] = value
 }
 
 /*

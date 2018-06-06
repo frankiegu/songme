@@ -1,0 +1,85 @@
+{{define "user/profile"}}
+
+{{template "base/header" .}}
+{{template "base/body-header" .}}
+
+
+    <div class="container">    
+
+        <div class="row">
+
+            <!-- Left side -->
+            <div class="col-md-3">
+
+                <div class="card bg-secondary mb-3 text-center shadow-sm">
+                    <div class="card-header">Profile</div>
+                    <div class="mt-3">
+                        <img src="{{.User.AvatarURL}}" class="rounded-circle" height="65" width="65" alt="{{.User.Username}}">
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text"><a href="/user/{{.User.Username}}">{{.User.Username}}</a></p>
+                        <hr class="my-4">
+                        <p class="card-text">{{.Other.recommendations}} {{if eq .Other.recommendations 1}}recommendation{{else}}recommendations{{end}}</p>
+                    </div>
+                </div>
+
+                <!-- <div class="card bg-secondary mb-3 text-center shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Interests</h5>
+                        <p class="card-text">
+                            <span class="badge badge-primary">W3Schools</span>
+                            <span class="badge badge-success">Labels</span>
+                            <span class="badge badge-info">Football</span>
+                            <span class="badge badge-warning">Gaming</span>
+                            <span class="badge badge-danger">Friends</span>
+                        </p>
+                    </div>
+                </div> -->
+            
+            </div> <!-- col-md-3 -->
+
+            <!-- Middle -->
+            <div class="col-md-7">
+            
+                <div class="row mb-4">
+                    <div class="col-md-12 text-center">
+                        <h4>Your Recommendations</h4>
+                    </div>
+                </div>
+
+                {{range .Songs}}
+                <div class="row justify-content-center">
+                  <div class="col-md-8">
+                        <div class="card mb-4 shadow-sm">
+                            <div class="card-body">
+                                <small class="text-muted">Recommended at {{.DateString}}</small>
+                            </div>
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <a href="{{.SongURL}}" class="embed-link"></a>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">{{.Description}}</p>
+                                <p><span class="text-muted">{{.Title}}</span> by <strong>{{.Artist}}</strong></p>
+                                <span class="badge badge-info">{{if not .Confirmed}}not confirmed yet{{end}}</span>
+                            </div>
+                        </div>
+                  </div>
+                </div>
+                {{end}}
+
+                {{template "common/pagination" .Pagination}}
+            
+            </div> <!-- col-sm-7 -->
+
+            <!-- Right side-->
+            <div class="col-sm-2 well">
+            </div> <!-- col-sm-2 -->
+
+        </div>
+    </div>
+    
+
+{{template "base/body-footer" .}}
+{{template "base/footer" .}}
+
+{{end}}
