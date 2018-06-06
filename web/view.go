@@ -78,8 +78,8 @@ func (v *View) FormValue(input string, required bool) string {
 	return value
 }
 
-// InserCurrenttUser inserts current user into view.
-func (v *View) InserCurrenttUser(user *models.User) {
+// InserCurrentUser inserts current user into view.
+func (v *View) InserCurrentUser(user *models.User) {
 	v.Data["CurrentUser"] = user
 }
 
