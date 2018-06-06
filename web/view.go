@@ -78,11 +78,6 @@ func (v *View) FormValue(input string, required bool) string {
 	return value
 }
 
-// InsertUser inserts given user into view.
-func (v *View) InsertUser(user *models.User) {
-	v.Data["CurrentUser"] = user
-}
-
 // InsertFlash inserts a flash message into view.
 func (v *View) InsertFlash(a ...interface{}) {
 	message := fmt.Sprint(a...)
@@ -148,13 +143,14 @@ func (v *View) InsertPagination(pagination *Pagination) {
 
 // Pagination will give pagination feature to our views.
 type Pagination struct {
+	Base       string
 	Page       int
 	Start      int
 	BarSize    int
 	TotalPages int
 }
 
-func newPagination(total, perSize, barSize, page int) *Pagination {
+func newPagination(base string, total, perSize, barSize, page int) *Pagination {
 	totalPages := int(math.Ceil(float64(total) / float64(perSize)))
 	start := 1
 
@@ -169,5 +165,5 @@ func newPagination(total, perSize, barSize, page int) *Pagination {
 		}
 	}
 
-	return &Pagination{Page: page, Start: start, BarSize: barSize, TotalPages: totalPages}
+	return &Pagination{Base: base, Page: page, Start: start, BarSize: barSize, TotalPages: totalPages}
 }

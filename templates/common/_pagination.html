@@ -10,18 +10,18 @@
                             <div>
                                 <ul class="pagination justify-content-center">
                                     <li class="page-item {{if eq .Page 1}}disabled{{end}}">
-                                        <a class="page-link" href="{{if eq .Page 2}}/songs{{else if not (eq .Page 1)}}/songs/page/{{sub .Page 1}}{{end}}">&laquo;</a>
+                                        <a class="page-link" href="{{if eq .Page 2}} /{{.Base}} {{else if not (eq .Page 1)}} /{{.Base}}/page/{{sub .Page 1}} {{end}}">&laquo;</a>
                                     </li>
 
                                     {{range $i, $v := repeating .BarSize}}
                                         {{$curr := sum $.Start $i}}
                                         <li class="page-item {{if eq $curr $.Page}}active{{end}}">
-                                          <a class="page-link" href="{{if eq $curr 1}}/songs{{else}}/songs/page/{{$curr}}{{end}}">{{$curr}}</a>
+                                          <a class="page-link" href="{{if eq $curr 1}} /{{$.Base}} {{else}} /{{$.Base}}/page/{{$curr}} {{end}}">{{$curr}}</a>
                                         </li>
                                     {{end}}
 
                                     <li class="page-item {{if eq .Page (sum .Start (sub .BarSize 1))}}disabled{{end}}">
-                                        <a class="page-link" href="/songs/page/{{sum .Page 1}}">&raquo;</a>
+                                        <a class="page-link" href="/{{.Base}}/page/{{sum .Page 1}}">&raquo;</a>
                                     </li>
                                 </ul>
                             </div>

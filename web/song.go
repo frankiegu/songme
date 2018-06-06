@@ -105,7 +105,7 @@ func (h *SongHandler) Songs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	pagination := newPagination(totalCount, h.songsPerPage, 10, page)
+	pagination := newPagination("songs", totalCount, h.songsPerPage, 10, page)
 	view.InsertSongs(songs)
 	view.InsertPagination(pagination)
 	view.Render(w, "song/all")
