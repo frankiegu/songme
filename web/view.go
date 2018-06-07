@@ -91,6 +91,11 @@ func (v *View) InsertUser(user *models.User) {
 	v.Data["User"] = user
 }
 
+// InsertUsers inserts slice of users into view.
+func (v *View) InsertUsers(users []*models.User) {
+	v.Data["Users"] = users
+}
+
 // InsertFlash inserts a flash message into view.
 func (v *View) InsertFlash(a ...interface{}) {
 	message := fmt.Sprint(a...)

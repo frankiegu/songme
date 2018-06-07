@@ -46,7 +46,10 @@ func NewServer(store Store, interactor Interactor) *Server {
 		songsPerPage: songme.GetConfig().SongsPerPage,
 	}
 	admin := AdminHandler{
-		songStore: store.Song,
+		userStore:    store.User,
+		songStore:    store.Song,
+		songsPerPage: songme.GetConfig().SongsPerPage,
+		usersPerPage: songme.GetConfig().UsersPerPage,
 	}
 
 	server := &Server{
@@ -104,12 +107,6 @@ func (s *Server) buildRoutes() {
 	s.router.HandleFunc("/songs", s.song.Songs).Methods("GET")
 	s.router.HandleFunc("/songs/page/{page:[0-9]+}", s.song.Songs).Methods("GET")
 
-	songsRouter := s.router.PathPrefix("/songs").Subrouter()
-	songsRouter.HandleFunc("/{id}", s.song.Confirm).Methods("PUT")
-	songsRouter.HandleFunc("/{id}", s.song.Delete).Methods("DELETE")
-	songsRouter.HandleFunc("/candidate", s.song.Songs).Methods("GET")
-	songsRouter.HandleFunc("/production", s.song.Songs).Methods("GET")
-
 	// User router
 	s.router.HandleFunc("/user/{username}", s.user.Profile).Methods("GET")
 	s.router.HandleFunc("/user/{username}/page/{page:[0-9]+}", s.user.Profile).Methods("GET")
@@ -117,6 +114,13 @@ func (s *Server) buildRoutes() {
 	// Admin router
 	adminRouter := s.router.PathPrefix("/admin").Subrouter()
 	adminRouter.HandleFunc("/dashboard", s.admin.Dashboard).Methods("GET")
+	adminRouter.HandleFunc("/dashboard/page/{page:[0-9]+}", s.admin.Dashboard).Methods("GET")
+	adminRouter.HandleFunc("/dashboard/productions", s.admin.Productions).Methods("GET")
+	adminRouter.HandleFunc("/dashboard/productions/{page:[0-9]+}", s.admin.Productions).Methods("GET")
+	adminRouter.HandleFunc("/dashboard/users", s.admin.Users).Methods("GET")
+	adminRouter.HandleFunc("/dashboard/users/{page:[0-9]+}", s.admin.Users).Methods("GET")
+	adminRouter.HandleFunc("/confirm/{id}", s.admin.ConfirmSong).Methods("POST")
+	adminRouter.HandleFunc("/delete/{id}", s.admin.DeleteSong).Methods("POST")
 
 	// Recover panics
 	s.router.Use(s.middleware.PanicRecovery)
@@ -126,7 +130,4 @@ func (s *Server) buildRoutes() {
 
 	// Authorize admin router
 	adminRouter.Use(s.middleware.Admin)
-
-	// Authorize songs router
-	songsRouter.Use(s.middleware.Authorize)
 }

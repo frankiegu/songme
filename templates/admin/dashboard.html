@@ -1,126 +1,122 @@
 {{define "admin/dashboard"}}
-{{template "layout/header" .}}
 
-    <style>
-      button {
-        margin-top: 5px;
-        margin-bottom: 5px;
-      }
-    </style>
+{{template "base/header" .}}
+{{template "base/body-header" .}}
 
-{{template "layout/body-header" .}}
+
+    <div class="container">    
+
+        <div class="row">
+
+            <!-- Left side -->
+            <div class="col-md-3">
+
+                <div class="card bg-secondary mb-3 text-center shadow-sm">
+                    <div class="card-header"><a href="/admin/dashboard">Candidates</a></div>
+                    <div class="card-header"><a href="/admin/dashboard/productions">Productions</a></div>
+                    <div class="card-header"><a href="/admin/dashboard/users">Users</a></div>
+                    <div class="card-header">Admin</div>
+                    <div class="mt-3">
+                        <img src="{{.CurrentUser.AvatarURL}}" class="rounded-circle shadow-sm" height="65" width="65" alt="{{.CurrentUser.Username}}">
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text"><a href="/user/{{.CurrentUser.Username}}">{{.CurrentUser.Username}}</a></p>
+                        <hr class="my-4">
+                        {{if .Other.songs}}<p class="card-text">{{.Other.songs}} {{if eq .Other.songs 1}}song{{else}}songs{{end}}</p>{{end}}
+                        {{if .Other.users}}<p class="card-text">{{.Other.users}} {{if eq .Other.users 1}}user{{else}}users{{end}}</p>{{end}}
+                    </div>
+                </div>
+            
+            </div> <!-- col-md-3 -->
+
+            <!-- Middle -->
+            {{if .Users}}
+            <div class="col-md-9">
+            {{else}}
+            <div class="col-md-7">
+            {{end}}
+                <div class="row mb-4">
+                    <div class="col-md-12 text-center">
+                        <h4>Dashboard</h4>
+                    </div>
+                </div>
+
+                {{if .Songs}}
+                    {{range .Songs}}
+                    <div class="row justify-content-center">
+                      <div class="col-md-8">
+                            <div class="card mb-4 shadow-sm">
+                                <div class="card-body">
+                                    <small class="text-muted">Recommended at {{.DateString}}</small>
+                                </div>
+                                <div class="embed-responsive embed-responsive-16by9">
+                                    <a href="{{.SongURL}}" class="embed-link"></a>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">{{.Description}}</p>
+                                    <p><span class="text-muted">{{.Title}}</span> by <strong>{{.Artist}}</strong></p>
+                                    <span class="badge badge-info">{{if not .Confirmed}}not confirmed yet{{end}}</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="btn-group" role="group">
+                                        {{if not .Confirmed}}
+                                        <form action="/admin/confirm/{{.ID}}" method="POST"><button type="submit" class="btn btn-sm btn-outline-info">Confirm</button></form>
+                                        {{end}}
+                                        <form action="/admin/delete/{{.ID}}" method="POST"><button type="submit" class="btn btn-sm btn-outline-primary">Delete</button></form>
+                                    </div>
+                                </div>
+                            </div> <!-- card -->
+                      </div>
+                    </div>
+                    {{end}}
+                {{end}}
+
+                {{if .Users}}
+                    <div class="row justify-content-center">
+                        <div class="col-md-12 shadow-sm">
+                              <table class="table table-hover">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Image</th>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Username</th>
+                                    <th scope="col">Role ID</th>
+                                    <th scope="col">Role Name</th>
+                                    <th scope="col">Role Permissions</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {{range .Users}}
+                                      <tr {{if .IsAdmin}}class="table-success"{{end}}>
+                                          <td><img src="{{.AvatarURL}}" class="rounded-circle shadow-sm" height="30" width="30" alt="{{.Username}}"></td>
+                                          <td>{{.ID}}</td>
+                                          <td>{{.Email}}</td>
+                                          <td>{{.Username}}</td>
+                                          <td>{{.Role.ID}}</td>
+                                          <td>{{.Role.Name}}</td>
+                                          <td>{{.Role.Permissions}}</td>
+                                      </tr>
+                                  {{end}}
+                                </tbody>
+                              </table>
+                        </div>
+                    </div>
+                {{end}}
+
+                {{template "common/pagination" .Pagination}}
+            
+            </div> <!-- col-md-7 -->
+
+            <!-- Right side-->
+            <div class="col-md-2">
+            </div> <!-- col-md-2 -->
+
+        </div>
+    </div>
     
-    {{template "common/navbar" .}}
 
-    <!-- Logout -->
-    <div class="container-fluid bg-slight text-right">
-      <form class="m-0" action="/logout" method="POST">
-        <button class="btn btn-warning mr-5" type="submit">Logout</button>
-      </form>
-    </div>
+{{template "base/body-footer" .}}
+{{template "base/footer" .}}
 
-    <!-- Tabs -->
-    <div class="container-fluid bg-slight p-5">
-      <ul class="nav nav-pills">
-        <li class="nav-item">
-          <a class="nav-link active" href="#candidate" id="songs-candidate">Candidate Songs</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#production" id="songs-production">Songs in Production</a>
-        </li>
-      </ul>
-      <div class="alert alert-danger mt-2 d-none" id="tab-error"></div>
-    </div>
-
-    <!-- Database error -->
-    {{with .Errors.database}}
-    <div class="alert alert-danger text-center">
-      {{.}}
-    </div>
-    {{end}}
-
-    <!-- Songs -->
-    <div class="container-fluid bg-slight pb-5" id="songs-container">
-      {{template "song/rows" .}}
-    </div>
-
-    {{template "common/footer" .}}
-    
-{{template "layout/body-footer" .}}
-
-    <script src="/static/js/songme.js"></script>
-    <script>
-      $('#songs-candidate').click(function(e){
-        e.preventDefault();
-        changeTabs(this);
-        fetchSongsFor('candidate');
-      })
-
-      $('#songs-production').click(function(e){
-        e.preventDefault();
-        changeTabs(this);
-        fetchSongsFor('production');
-      })
-
-      function changeTabs(tab) {
-        $('a.nav-link').each(function () {
-            $(this).removeClass('active');
-        })
-        $(tab).addClass('active');
-      }
-      
-      function fetchSongsFor(tab) {
-        $.ajax({
-          method: "GET",
-          url: "/songs/" + tab,
-          success: function(response) {
-            $('#songs-container').empty();
-            $('#songs-container').html(response);
-            $('#tab-error').addClass('d-none');
-            // replaceEmbedCodes is declared in songme.js
-            replaceEmbedCodes();
-          },
-          error: function() {
-            $('#tab-error').removeClass('d-none');
-            $('#tab-error').text('tab-error: Opps! Encountered error. Could not fetch ' + tab + ' songs.');
-          }
-        });
-      }
-
-      function selectSong(id) {
-        $.ajax({
-          method: "PUT",
-          url: "/songs/" + id,
-          success: function() {
-            $("#song-row-" + id).remove();
-            $('#row-error-' + id).addClass('d-none');
-          },
-          error: function() {
-            $('#row-error-' + id).removeClass('d-none');
-            $('#row-error-' + id).text('Opps! Encountered error. Could not select this song.');
-          }
-        });
-      }
-
-      function deleteSong(id) {
-        // Drop first character from href.
-        activeTab = $('a.active').attr('href').substring(1);
-        activeTab += "/"
-
-        $.ajax({
-          method: "DELETE",
-          url: "/songs/" + activeTab + id,
-          success: function() {
-            $("#song-row-" + id).remove();
-            $('#row-error-' + id).addClass('d-none');
-          },
-          error: function() {
-            $('#row-error-' + id).removeClass('d-none');
-            $('#row-error-' + id).text('Opps! Encountered error. Could not delete this song.');
-          }
-        });
-      }
-    </script>
-
-{{template "layout/footer" .}}
 {{end}}

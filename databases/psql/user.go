@@ -108,6 +108,52 @@ func (s *UserStore) ByUsername(username string) (*models.User, error) {
 	return &user, nil
 }
 
+// All returns all users in database.
+func (s *UserStore) All(limit, offset int) ([]*models.User, int, error) {
+	stmt := `
+	SELECT 
+	u.id, u.email, u.username, u.password_hash, 
+	r.id, r.name, r.default_role, r.permissions, 
+	COUNT(u.id) OVER() AS total_count
+	FROM users AS u
+	INNER JOIN roles AS r
+	ON u.role_id = r.id
+	ORDER BY u.id ASC 
+	LIMIT $1
+	OFFSET $2;
+	`
+	rows, err := s.DB.Query(stmt, limit, offset)
+	if err != nil {
+		return nil, 0, err
+	}
+	defer rows.Close()
+
+	totalCount := 0
+	users := []*models.User{}
+	for rows.Next() {
+		user := models.User{}
+		err := rows.Scan(
+			&user.ID,
+			&user.Email,
+			&user.Username,
+			&user.PasswordHash,
+			&user.Role.ID,
+			&user.Role.Name,
+			&user.Role.Default,
+			&user.Role.Permissions,
+			&totalCount,
+		)
+		if err != nil {
+			return nil, 0, err
+		}
+		users = append(users, &user)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, 0, err
+	}
+	return users, totalCount, nil
+}
+
 // UpdatePassword updates user's password to new password hash.
 func (s *UserStore) UpdatePassword(email, passwordHash string) error {
 	stmt := "UPDATE users SET password_hash = $1 WHERE email = $2;"

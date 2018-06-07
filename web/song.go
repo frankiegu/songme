@@ -66,20 +66,6 @@ func (h *SongHandler) Create(w http.ResponseWriter, r *http.Request) {
 	view.Render(w, "song/success")
 }
 
-// Confirm sets confirmed true for a song.
-func (h *SongHandler) Confirm(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id := vars["id"]
-
-	err := h.songInteractor.Confirm(id)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-}
-
 // Songs returns all songs that are currently confirmed.
 func (h *SongHandler) Songs(w http.ResponseWriter, r *http.Request) {
 	view := NewView(r)
@@ -109,32 +95,4 @@ func (h *SongHandler) Songs(w http.ResponseWriter, r *http.Request) {
 	view.InsertSongs(songs)
 	view.InsertPagination(pagination)
 	view.Render(w, "song/all")
-}
-
-// Candidates returns all songs that are currently not confirmed.
-func (h *SongHandler) Candidates(w http.ResponseWriter, r *http.Request) {
-	view := NewView(r)
-
-	songs, _, err := h.songInteractor.All(false, 100, 0)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	view.InsertSongs(songs)
-	view.Render(w, "song/rows")
-}
-
-// Delete deletes a song from the database.
-func (h *SongHandler) Delete(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id := vars["id"]
-
-	err := h.songInteractor.Delete(id)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
 }
