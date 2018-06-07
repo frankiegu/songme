@@ -116,9 +116,9 @@ func (s *Server) buildRoutes() {
 	adminRouter.HandleFunc("/dashboard", s.admin.Dashboard).Methods("GET")
 	adminRouter.HandleFunc("/dashboard/page/{page:[0-9]+}", s.admin.Dashboard).Methods("GET")
 	adminRouter.HandleFunc("/dashboard/productions", s.admin.Productions).Methods("GET")
-	adminRouter.HandleFunc("/dashboard/productions/{page:[0-9]+}", s.admin.Productions).Methods("GET")
+	adminRouter.HandleFunc("/dashboard/productions/page/{page:[0-9]+}", s.admin.Productions).Methods("GET")
 	adminRouter.HandleFunc("/dashboard/users", s.admin.Users).Methods("GET")
-	adminRouter.HandleFunc("/dashboard/users/{page:[0-9]+}", s.admin.Users).Methods("GET")
+	adminRouter.HandleFunc("/dashboard/users/page/{page:[0-9]+}", s.admin.Users).Methods("GET")
 	adminRouter.HandleFunc("/confirm/{id}", s.admin.ConfirmSong).Methods("POST")
 	adminRouter.HandleFunc("/delete/{id}", s.admin.DeleteSong).Methods("POST")
 

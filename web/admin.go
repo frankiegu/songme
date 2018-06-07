@@ -97,15 +97,15 @@ func (h *AdminHandler) Users(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	offset := (page - 1) * h.songsPerPage
-	users, totalCount, err := h.userStore.All(h.songsPerPage, offset)
+	offset := (page - 1) * h.usersPerPage
+	users, totalCount, err := h.userStore.All(h.usersPerPage, offset)
 	if err != nil {
 		view.InsertFlashError(err.Error())
 		view.Render(w, "admin/dashboard")
 		return
 	}
 
-	pagination := newPagination("admin/dashboard/users", totalCount, h.songsPerPage, 10, page)
+	pagination := newPagination("admin/dashboard/users", totalCount, h.usersPerPage, 10, page)
 	view.InsertUsers(users)
 	view.InsertPagination(pagination)
 	view.InsertOther("users", totalCount)
