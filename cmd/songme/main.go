@@ -5,7 +5,9 @@ import (
 	"log"
 	"net/http"
 
-	_ "github.com/lib/pq"
+	"github.com/golang-migrate/migrate"
+	_ "github.com/golang-migrate/migrate/database/postgres"
+	_ "github.com/golang-migrate/migrate/source/file"
 
 	"github.com/emredir/songme"
 	"github.com/emredir/songme/databases/psql"
@@ -13,7 +15,27 @@ import (
 	"github.com/emredir/songme/web"
 )
 
+func migrateDB() {
+	m, err := migrate.New(
+		"file://migrations",
+		songme.GetConfig().DatabaseURL,
+	)
+	if err != nil {
+		log.Fatal("[MAIN - MIGRATION]:", err)
+	}
+	if err := m.Up(); err != nil {
+		if err == migrate.ErrNoChange {
+			log.Println("[MAIN - MIGRATION NO CHANGE]", err)
+		} else {
+			log.Fatal("[MAIN - MIGRATION]:", err)
+		}
+	}
+}
+
 func main() {
+	// Migration
+	migrateDB()
+
 	// Connect to database
 	db, err := sql.Open("postgres", songme.GetConfig().DatabaseURL)
 	if err != nil {

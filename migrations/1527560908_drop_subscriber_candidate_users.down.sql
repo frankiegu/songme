@@ -1,0 +1,32 @@
+CREATE TABLE IF NOT EXISTS subscriber (
+	id SERIAL,
+	name VARCHAR(64) NOT NULL,
+	email VARCHAR(64) NOT NULL,
+	created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+	UNIQUE (email),
+	PRIMARY KEY (id)
+);
+CREATE TABLE IF NOT EXISTS candidate_song (
+	id SERIAL,
+	title VARCHAR(255) NOT NULL,
+	author VARCHAR(255) NOT NULL,
+	song_url VARCHAR(255) NOT NULL,
+	image_url VARCHAR(255),
+	description VARCHAR(280),
+	recommended BOOLEAN NOT NULL DEFAULT false,			
+	created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+	recommended_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+	UNIQUE (title),
+	UNIQUE (song_url),
+	PRIMARY KEY (id)
+);
+CREATE TABLE IF NOT EXISTS users (
+	uuid VARCHAR(64) NOT NULL,
+	username VARCHAR(25) NOT NULL,
+	email VARCHAR(255) NOT NULL,
+	password_hash VARCHAR(64) NOT NULL,
+	role CHAR(1) NOT NULL,
+	UNIQUE (username),
+	UNIQUE (email),
+	PRIMARY KEY (uuid)
+);

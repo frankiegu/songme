@@ -1,0 +1,2 @@
+ALTER TABLE users DROP CONSTRAINT users_role_id_fk;
+DROP TABLE IF EXISTS users;
