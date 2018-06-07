@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/emredir/songme/internal/context"
 	"github.com/emredir/songme/models"
 
 	"github.com/gorilla/mux"
@@ -11,7 +12,8 @@ import (
 
 // SongInteractor is used to interact with the database for song related tasks.
 type SongInteractor interface {
-	models.SongStore
+	Create(song *models.Song) error
+	All(confirmed bool, limit, offset int) ([]*models.Song, int, error)
 }
 
 // SongHandler defines song specific controllers.
@@ -48,12 +50,19 @@ func (h *SongHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	user := context.User(r.Context())
+	var userID *string
+	if user != nil {
+		userID = &user.ID
+	}
+
 	s := &models.Song{
 		Title:       title,
 		Artist:      artist,
 		SongURL:     songURL,
 		ImageURL:    &imageURL,
 		Description: &description,
+		UserID:      userID,
 	}
 	err := h.songInteractor.Create(s)
 	if err != nil {
