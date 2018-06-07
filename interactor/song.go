@@ -4,7 +4,6 @@ import (
 	"errors"
 
 	"github.com/emredir/songme/models"
-	"github.com/lib/pq"
 )
 
 var (
@@ -27,14 +26,22 @@ type Song struct {
 func (s *Song) Create(song *models.Song) error {
 	err := s.SongStore.Create(song)
 
-	// Check for the type of postgresql error.
-	if pqError, ok := err.(*pq.Error); ok {
-		// Error '23505' is unique violation
-		if pqError.Code == "23505" {
-			return ErrSongExists
-		}
-	}
+	/*
+		Can't use this because of migrate package!
 
+		// Check for the type of postgresql error.
+		if pqError, ok := err.(*pq.Error); ok {
+			// Error '23505' is unique violation
+			if pqError.Code == "23505" {
+				return ErrSongExists
+			}
+		}
+	*/
+
+	// TODO: make search about it.
+	if err != nil {
+		return ErrSongExists
+	}
 	return nil
 }
 
