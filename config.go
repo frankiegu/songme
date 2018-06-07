@@ -7,18 +7,19 @@ import (
 
 // Environment variables for Songme.
 const (
-	EnvPlatform              = "ENV"
-	EnvPort                  = "PORT"
+	EnvPlatform              = "ENV"  // Optional for development
+	EnvPort                  = "PORT" // Optional for development
 	EnvDatabaseURL           = "DATABASE_URL"
 	EnvSongmeAdmin           = "SONGME_ADMIN"
-	EnvCookieName            = "COOKIE_NAME"
-	EnvCookieHashKey         = "COOKIE_HASH_KEY"
-	EnvCookieBlockKey        = "COOKIE_BLOCK_KEY"
-	EnvUsernameLength        = "USERNAME_LENGTH"
-	EnvPasswordLength        = "PASSWORD_LENGTH"
-	EnvHashCost              = "HASH_COST"
-	EnvSongDescriptionLength = ""
-	EnvSongsPerPage          = "SONGS_PER_PAGE"
+	EnvCookieName            = "COOKIE_NAME"             // Optional
+	EnvCookieHashKey         = "COOKIE_HASH_KEY"         // Optional for development
+	EnvCookieBlockKey        = "COOKIE_BLOCK_KEY"        // Optional for development
+	EnvUsernameLength        = "USERNAME_LENGTH"         // Optional
+	EnvPasswordLength        = "PASSWORD_LENGTH"         // Optional
+	EnvHashCost              = "HASH_COST"               // Optional
+	EnvSongDescriptionLength = "SONG_DESCRIPTION_LENGTH" // Optional
+	EnvSongsPerPage          = "SONGS_PER_PAGE"          // Optional
+	EnvUsersPerPage          = "USERS_PER_PAGE"          // Optional
 )
 
 // Env retrieves the value of the environment variable named by the key.
@@ -59,6 +60,7 @@ type Config struct {
 	HashCost              int
 	SongDescriptionLength int
 	SongsPerPage          int
+	UsersPerPage          int
 }
 
 // GetConfig returns a copy of the config object since we want config object to be immutable.
@@ -88,5 +90,7 @@ func init() {
 
 		SongDescriptionLength: EnvInt(EnvSongDescriptionLength, 280),
 		SongsPerPage:          EnvInt(EnvSongsPerPage, 20),
+
+		UsersPerPage: EnvInt(EnvUsersPerPage, 20),
 	}
 }
